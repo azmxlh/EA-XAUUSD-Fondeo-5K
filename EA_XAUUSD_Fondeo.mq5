@@ -143,16 +143,37 @@ void VerificarSenalesEntrada()
     bool RSI_Oversold = RSI < 30;
     bool RSI_Overbought = RSI > 70;
     
-    // ========== INDICADOR 2: MACD ==========
-    double MACD = iMACD(_Symbol, PERIOD_M5, MACD_FAST, MACD_SLOW, MACD_SIGNAL, PRICE_CLOSE, 0);
-    double MACD_Signal = iMACD(_Symbol, PERIOD_M5, MACD_FAST, MACD_SLOW, MACD_SIGNAL, PRICE_CLOSE, 1);
+    // ========== INDICADOR 2: MACD (CORREGIDO) ==========
+    // iMACD retorna un handle, no un valor. Necesitamos CopyBuffer
+    int macdHandle = iMACD(_Symbol, PERIOD_M5, MACD_FAST, MACD_SLOW, MACD_SIGNAL, PRICE_CLOSE);
+    double macdLine[], macdSignal[];
+    ArraySetAsSeries(macdLine, true);
+    ArraySetAsSeries(macdSignal, true);
+    
+    CopyBuffer(macdHandle, 0, 0, 1, macdLine);      // MACD line
+    CopyBuffer(macdHandle, 1, 0, 1, macdSignal);    // Signal line
+    
+    double MACD = (ArraySize(macdLine) > 0) ? macdLine[0] : 0;
+    double MACD_Signal = (ArraySize(macdSignal) > 0) ? macdSignal[0] : 0;
     bool MACD_BullishCrossover = MACD > MACD_Signal;
     bool MACD_BearishCrossover = MACD < MACD_Signal;
     
-    // ========== INDICADOR 3: BOLLINGER BANDS ==========
-    double BB_Upper = iBands(_Symbol, PERIOD_M5, BB_PERIOD, BB_DESV, 0, PRICE_CLOSE, 1);
-    double BB_Lower = iBands(_Symbol, PERIOD_M5, BB_PERIOD, BB_DESV, 0, PRICE_CLOSE, 2);
-    double BB_Middle = iBands(_Symbol, PERIOD_M5, BB_PERIOD, BB_DESV, 0, PRICE_CLOSE, 0);
+    // ========== INDICADOR 3: BOLLINGER BANDS (CORREGIDO) ==========
+    // iBands retorna un handle, necesitamos CopyBuffer
+    int bandHandle = iBands(_Symbol, PERIOD_M5, BB_PERIOD, 0, BB_DESV);
+    double bbUpper[], bbLower[], bbMiddle[];
+    
+    ArraySetAsSeries(bbUpper, true);
+    ArraySetAsSeries(bbLower, true);
+    ArraySetAsSeries(bbMiddle, true);
+    
+    CopyBuffer(bandHandle, 1, 0, 1, bbUpper);   // Upper band
+    CopyBuffer(bandHandle, 2, 0, 1, bbLower);   // Lower band
+    CopyBuffer(bandHandle, 0, 0, 1, bbMiddle);  // Middle band
+    
+    double BB_Upper = (ArraySize(bbUpper) > 0) ? bbUpper[0] : Ask + 100 * _Point;
+    double BB_Lower = (ArraySize(bbLower) > 0) ? bbLower[0] : Ask - 100 * _Point;
+    double BB_Middle = (ArraySize(bbMiddle) > 0) ? bbMiddle[0] : Close;
     
     bool Precio_NearBBLower = Close < BB_Middle && Close > BB_Lower;
     bool Precio_NearBBUpper = Close > BB_Middle && Close < BB_Upper;
@@ -163,10 +184,11 @@ void VerificarSenalesEntrada()
     
     // ========== INDICADOR 5: SMART MONEY LEVELS ==========
     double Precio = Close;
+    double RangoVolatilidad = iHigh(_Symbol, PERIOD_D1, 0) - iLow(_Symbol, PERIOD_D1, 0);
     bool En_ZonaAcumulacion = Precio >= ZonaAcumulacion && Precio <= SoportePrincipal;
     bool En_ZonaDistribucion = Precio >= ResistenciaPrincipal && Precio <= ZonaDistribucion;
-    bool Rebote_Soporte = Precio >= SoportePrincipal && Precio <= SoportePrincipal + (High24-Low24)*0.05;
-    bool Rebote_Resistencia = Precio >= ResistenciaPrincipal - (High24-Low24)*0.05 && Precio <= ResistenciaPrincipal;
+    bool Rebote_Soporte = Precio >= SoportePrincipal && Precio <= SoportePrincipal + (RangoVolatilidad * 0.05);
+    bool Rebote_Resistencia = Precio >= ResistenciaPrincipal - (RangoVolatilidad * 0.05) && Precio <= ResistenciaPrincipal;
     
     // ========== SIGNAL BUY: CONFLUENCE ==========
     int ConfluenceBuy = 0;
@@ -201,10 +223,10 @@ void VerificarSenalesEntrada()
 void AbrirCompra(double Ask, int ConfluenceLevel)
 {
     // SL: 40 pips
-    double SL = Ask - 40 * Point;
+    double SL = Ask - 40 * _Point;
     
     // TP: Fibonacci
-    double TP = Ask + (100 + (ConfluenceLevel * 20)) * Point;
+    double TP = Ask + (100 + (ConfluenceLevel * 20)) * _Point;
     
     string Razon = "BUY | Confluence: " + (string)ConfluenceLevel + "/5";
     
@@ -221,10 +243,10 @@ void AbrirCompra(double Ask, int ConfluenceLevel)
 void AbrirVenta(double Bid, int ConfluenceLevel)
 {
     // SL: 40 pips
-    double SL = Bid + 40 * Point;
+    double SL = Bid + 40 * _Point;
     
     // TP: Fibonacci
-    double TP = Bid - (100 + (ConfluenceLevel * 20)) * Point;
+    double TP = Bid - (100 + (ConfluenceLevel * 20)) * _Point;
     
     string Razon = "SELL | Confluence: " + (string)ConfluenceLevel + "/5";
     
@@ -247,8 +269,8 @@ void GestionarTradesAbiertos()
             if (PositionGetSymbol(i) == _Symbol)
             {
                 ulong ticket = PositionGetTicket(i);
-                datetime timeEntry = PositionGetInteger(POSITION_TIME);
-                int minutosAbiertos = (int)((TimeCurrent() - timeEntry) / 60);
+                long timeEntry = PositionGetInteger(POSITION_TIME);
+                long minutosAbiertos = (TimeCurrent() - timeEntry) / 60;
                 
                 double EntryPrice = PositionGetDouble(POSITION_PRICE_OPEN);
                 double Profit = PositionGetDouble(POSITION_PROFIT);
@@ -259,8 +281,8 @@ void GestionarTradesAbiertos()
                     : SymbolInfoDouble(_Symbol, SYMBOL_ASK);
                 
                 // ========== BREAK EVEN DINÁMICO ==========
-                if ((Type == POSITION_TYPE_BUY && CurrentPrice > EntryPrice + 50 * Point) ||
-                    (Type == POSITION_TYPE_SELL && CurrentPrice < EntryPrice - 50 * Point))
+                if ((Type == POSITION_TYPE_BUY && CurrentPrice > EntryPrice + 50 * _Point) ||
+                    (Type == POSITION_TYPE_SELL && CurrentPrice < EntryPrice - 50 * _Point))
                 {
                     double NewSL = EntryPrice;
                     if (PositionGetDouble(POSITION_SL) != NewSL)
@@ -271,12 +293,12 @@ void GestionarTradesAbiertos()
                 }
                 
                 // ========== TRAILING STOP ==========
-                if ((Type == POSITION_TYPE_BUY && CurrentPrice > EntryPrice + 100 * Point) ||
-                    (Type == POSITION_TYPE_SELL && CurrentPrice < EntryPrice - 100 * Point))
+                if ((Type == POSITION_TYPE_BUY && CurrentPrice > EntryPrice + 100 * _Point) ||
+                    (Type == POSITION_TYPE_SELL && CurrentPrice < EntryPrice - 100 * _Point))
                 {
                     double TrailingSL = (Type == POSITION_TYPE_BUY) 
-                        ? CurrentPrice - 50 * Point
-                        : CurrentPrice + 50 * Point;
+                        ? CurrentPrice - 50 * _Point
+                        : CurrentPrice + 50 * _Point;
                     
                     if ((Type == POSITION_TYPE_BUY && TrailingSL > PositionGetDouble(POSITION_SL)) ||
                         (Type == POSITION_TYPE_SELL && TrailingSL < PositionGetDouble(POSITION_SL)))
@@ -362,7 +384,9 @@ bool VerificarLimitesCriticos()
 //+------------------------------------------------------------------+
 bool EsHorarioOperacion24x7()
 {
-    int hora = Hour();
+    MqlDateTime dt;
+    TimeToStruct(TimeCurrent(), dt);
+    int hora = dt.hour;
     
     // Asia: 20:00-04:00 GMT
     if (hora >= 20 || hora < 4) return true;
