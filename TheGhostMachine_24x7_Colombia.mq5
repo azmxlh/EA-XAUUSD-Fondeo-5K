@@ -5,13 +5,13 @@
 //|   RECONFIGURED: TÚ ELIGES SESIÓN | SIEMPRE ACTIVO                |
 //+------------------------------------------------------------------+
 #property copyright "TheGhostMachine Professional — 2026"
-#property version   "6.01"
+#property version   "6.02"
 #property description "24/7 OPERACIÓN | ASIA + NY | Choose Session | Siempre Activo"
 #property script_show_inputs
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // 🔧 CONFIGURACION — 24/7 ACTIVO | TÚ ELIGES LA SESION PREFERIDA
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 input group "=== 🌍 SESSION PREFERENCE - ELIJE TU SESIÓN PREFERIDA ==="
 input string PreferredSession    = "NY";  
@@ -42,9 +42,9 @@ input double MaxATR             = 250.0; // ATR máximo permitido
 input group "=== OUTPUT ==="
 input string OutputFolder        = "TheGhostMachine";
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // ESTRUCTURAS Y VARIABLES GLOBALES
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 struct SessionConfig
 {
@@ -86,9 +86,9 @@ OptimizedSignal g_signal;
 int g_total_signals_today = 0;
 string g_last_signal_date = "";
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // FUNCIONES AUXILIARES
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 double GetPip()
 {
@@ -122,9 +122,9 @@ bool IsTimeInRange(int currentHour, int startHour, int endHour)
       return (currentHour >= startHour && currentHour < endHour);
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // INICIALIZAR SESIONES
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 void InitializeSessions()
 {
@@ -162,9 +162,9 @@ void InitializeSessions()
    g_sessions[2].is_preferred = (PreferredSession == "NY");
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // DETECTAR SESIONES ACTIVAS
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 void DetectActiveSessions()
 {
@@ -178,13 +178,16 @@ void DetectActiveSessions()
    }
 }
 
-SessionConfig GetCurrentSession()
+bool GetCurrentSession(SessionConfig &session)
 {
    // Retorna la sesión preferida si está activa
    for(int i = 0; i < 3; i++)
    {
       if(g_sessions[i].is_preferred && g_sessions[i].is_active)
-         return g_sessions[i];
+      {
+         session = g_sessions[i];
+         return true;
+      }
    }
 
    // Si preferida no está activa pero 24x7 está habilitado, retorna cualquier activa
@@ -193,19 +196,20 @@ SessionConfig GetCurrentSession()
       for(int i = 0; i < 3; i++)
       {
          if(g_sessions[i].is_active)
-            return g_sessions[i];
+         {
+            session = g_sessions[i];
+            return true;
+         }
       }
    }
 
-   // Si nada está activo, retorna sesión vacía
-   SessionConfig empty;
-   empty.is_active = false;
-   return empty;
+   // Si nada está activo, retorna false
+   return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // DETECCIÓN DE TENDENCIA - MULTI-TIMEFRAME
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 string DetectTrend(ENUM_TIMEFRAMES tf)
 {
@@ -252,11 +256,11 @@ string DetectTrend(ENUM_TIMEFRAMES tf)
    return "RANGING";
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// GENERAR SEÑAL
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
+// GENERAR SEÑAL (CORREGIDO: SessionConfig por referencia)
+// ═══════════════════════════════════════════════════════════════════════════════
 
-bool GenerateSignal(SessionConfig session)
+bool GenerateSignal(SessionConfig &session)
 {
    double price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
    
@@ -329,9 +333,9 @@ bool GenerateSignal(SessionConfig session)
    return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // GUARDAR SEÑAL EN JSON
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 void WriteSignalJSON()
 {
@@ -343,7 +347,7 @@ void WriteSignalJSON()
    }
 
    FileWrite(fh, "{");
-   FileWrite(fh, "  \"system\": \"TheGhostMachine v6.01 24x7 ASIA+NY\",");
+   FileWrite(fh, "  \"system\": \"TheGhostMachine v6.02 24x7 ASIA+NY\",");
    FileWrite(fh, "  \"mode\": \"24/7 OPERACIÓN\",");
    FileWrite(fh, "  \"operation_hours\": \"Siempre Activo\",");
    FileWrite(fh, "  \"preferred_session\": \"" + PreferredSession + "\",");
@@ -393,9 +397,9 @@ void WriteSignalJSON()
    FileClose(fh);
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 // MAIN - OnStart
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════════
 
 void OnStart()
 {
@@ -406,9 +410,10 @@ void OnStart()
    g_signal.atr_value = 0;
 
    // ════════ LÓGICA 24/7 ════════
-   SessionConfig currentSession = GetCurrentSession();
+   SessionConfig currentSession;
+   bool hasSession = GetCurrentSession(currentSession);
    
-   if(!currentSession.is_active)
+   if(!hasSession)
    {
       if(!Enable24x7)
       {
@@ -447,9 +452,9 @@ void OnStart()
       string msg = "\n╔════════════════════════════════════╗\n";
       msg += "║ ✅ SEÑAL VÁLIDA - EJECUCIÓN       ║\n";
       msg += "╠════════════════════════════════════╣\n";
-      msg += "║ Sistema: TheGhostMachine v6.01    ║\n";
+      msg += "║ Sistema: TheGhostMachine v6.02    ║\n";
       msg += "║ Modo: 24/7 OPERACIÓN              ║\n";
-      msg += "║ Sesión: " + StringSubstr(g_signal.session_code, 0, 15) + StringFill(" ", 15 - StringLen(StringSubstr(g_signal.session_code, 0, 15))) + " ║\n";
+      msg += "║ Sesión: " + g_signal.session_code + StringFill(" ", 22 - StringLen(g_signal.session_code)) + " ║\n";
       msg += "║ Tipo: " + g_signal.trade_type + " | " + (g_signal.buy ? "BUY" : "SELL") + StringFill(" ", 20 - StringLen(g_signal.trade_type) - (g_signal.buy ? 3 : 4)) + " ║\n";
       msg += "║ Entry: " + DoubleToString(g_signal.entry, _Digits) + StringFill(" ", 25 - StringLen(DoubleToString(g_signal.entry, _Digits))) + " ║\n";
       msg += "║ SL: " + DoubleToString(g_signal.sl, _Digits) + StringFill(" ", 28 - StringLen(DoubleToString(g_signal.sl, _Digits))) + " ║\n";
