@@ -68,13 +68,16 @@ int OnInit()
 //+------------------------------------------------------------------+
 void OnTick()
 {
-    // RESETEAR POR DÍA
-    if (DiaAnterior != Day())
+    // RESETEAR POR DÍA - FIX: Usar TimeCurrent() en lugar de Day()
+    MqlDateTime dt;
+    TimeToStruct(TimeCurrent(), dt);
+    
+    if (DiaAnterior != dt.day)
     {
         GananciaDiaria = 0;
         PerdidaDiaria = 0;
         PausadoHoy = false;
-        DiaAnterior = Day();
+        DiaAnterior = dt.day;
         
         Print("═══════ NUEVO DÍA - Balance: $", AccountInfoDouble(ACCOUNT_BALANCE), " ═══════");
         CalcularNivelesInstitucionales();
@@ -144,14 +147,13 @@ void VerificarSenalesEntrada()
     bool RSI_Overbought = RSI > 70;
     
     // ========== INDICADOR 2: MACD (CORREGIDO) ==========
-    // iMACD retorna un handle, no un valor. Necesitamos CopyBuffer
     int macdHandle = iMACD(_Symbol, PERIOD_M5, MACD_FAST, MACD_SLOW, MACD_SIGNAL, PRICE_CLOSE);
     double macdLine[], macdSignal[];
     ArraySetAsSeries(macdLine, true);
     ArraySetAsSeries(macdSignal, true);
     
-    CopyBuffer(macdHandle, 0, 0, 1, macdLine);      // MACD line
-    CopyBuffer(macdHandle, 1, 0, 1, macdSignal);    // Signal line
+    CopyBuffer(macdHandle, 0, 0, 1, macdLine);
+    CopyBuffer(macdHandle, 1, 0, 1, macdSignal);
     
     double MACD = (ArraySize(macdLine) > 0) ? macdLine[0] : 0;
     double MACD_Signal = (ArraySize(macdSignal) > 0) ? macdSignal[0] : 0;
@@ -159,17 +161,17 @@ void VerificarSenalesEntrada()
     bool MACD_BearishCrossover = MACD < MACD_Signal;
     
     // ========== INDICADOR 3: BOLLINGER BANDS (CORREGIDO) ==========
-    // iBands retorna un handle, necesitamos CopyBuffer
-    int bandHandle = iBands(_Symbol, PERIOD_M5, BB_PERIOD, 0, BB_DESV);
+    // FIX: iBands sintaxis correcta: iBands(symbol, period, shift, deviation, applied_price)
+    int bandHandle = iBands(_Symbol, PERIOD_M5, BB_PERIOD, 0, BB_DESV, PRICE_CLOSE);
     double bbUpper[], bbLower[], bbMiddle[];
     
     ArraySetAsSeries(bbUpper, true);
     ArraySetAsSeries(bbLower, true);
     ArraySetAsSeries(bbMiddle, true);
     
-    CopyBuffer(bandHandle, 1, 0, 1, bbUpper);   // Upper band
-    CopyBuffer(bandHandle, 2, 0, 1, bbLower);   // Lower band
-    CopyBuffer(bandHandle, 0, 0, 1, bbMiddle);  // Middle band
+    CopyBuffer(bandHandle, 1, 0, 1, bbUpper);
+    CopyBuffer(bandHandle, 2, 0, 1, bbLower);
+    CopyBuffer(bandHandle, 0, 0, 1, bbMiddle);
     
     double BB_Upper = (ArraySize(bbUpper) > 0) ? bbUpper[0] : Ask + 100 * _Point;
     double BB_Lower = (ArraySize(bbLower) > 0) ? bbLower[0] : Ask - 100 * _Point;
@@ -222,10 +224,7 @@ void VerificarSenalesEntrada()
 //+------------------------------------------------------------------+
 void AbrirCompra(double Ask, int ConfluenceLevel)
 {
-    // SL: 40 pips
     double SL = Ask - 40 * _Point;
-    
-    // TP: Fibonacci
     double TP = Ask + (100 + (ConfluenceLevel * 20)) * _Point;
     
     string Razon = "BUY | Confluence: " + (string)ConfluenceLevel + "/5";
@@ -242,10 +241,7 @@ void AbrirCompra(double Ask, int ConfluenceLevel)
 //+------------------------------------------------------------------+
 void AbrirVenta(double Bid, int ConfluenceLevel)
 {
-    // SL: 40 pips
     double SL = Bid + 40 * _Point;
-    
-    // TP: Fibonacci
     double TP = Bid - (100 + (ConfluenceLevel * 20)) * _Point;
     
     string Razon = "SELL | Confluence: " + (string)ConfluenceLevel + "/5";
