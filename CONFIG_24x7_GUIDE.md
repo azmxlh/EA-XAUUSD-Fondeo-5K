@@ -1,109 +1,114 @@
-# 🏛️ TheGhostMachine 24x7 - GUÍA DE CONFIGURACIÓN
+# 🏛️ TheGhostMachine 24x7 - CONFIGURATION GUIDE
 
-## 📋 DESCRIPCIÓN
+## 📋 DESCRIPTION
 
-**TheGhostMachine v6.01** ahora está reconfigurable para operación **24/7** enfocado en:
+**TheGhostMachine v6.01** is now reconfigurable for **24/7 trading**, focused on:
 - **ASIA** (20:00-06:00 UTC)
-- **NUEVA YORK** (13:00-21:00 UTC)
+- **NEW YORK** (13:00-21:00 UTC)
 
-Puede operarse en **cualquier sesión** pero con **preferencia** por tu elección.
+It can operate during **any session**, but with **preference** for your selected session.
 
 ---
 
-## ⚙️ CONFIGURACIÓN PRINCIPAL
+## ⚙️ MAIN CONFIGURATION
 
-### 1️⃣ SESSION PREFERENCE (Elige tu sesión preferida)
-
-```
-PreferredSession = "NY"  // Opciones: "ASIA_PRE" / "ASIA_OPEN" / "NY"
-```
-
-**¿Qué hace?**
-- SI está activa tu sesión preferida → Operará preferiblemente ahí
-- SI no está activa pero 24x7 está habilitado → Operará en cualquier sesión activa
-- Prioriza pero no limita
-
-### 2️⃣ OPERACIÓN 24/7 - CONTROLES
+### 1️⃣ SESSION PREFERENCE (Choose your preferred session)
 
 ```
-Enable24x7 = true         // SI = Operación 24 horas | NO = Solo sesión preferida
-TradeOutOfPreferred = true // SI = Operar también fuera de sesión preferida
+PreferredSession = "NY"  // Options: "ASIA_PRE" / "ASIA_OPEN" / "NY"
 ```
 
-**COMBINACIONES:**
+**What does it do?**
+- IF your preferred session is active → It will trade preferably during that session.
+- IF it is not active but 24/7 mode is enabled → It will trade during any active session.
+- It prioritizes your preferred session but does not limit trading to it.
 
-| Enable24x7 | TradeOutOfPreferred | Comportamiento |
-|------------|-------------------|----------------|
-| **true** | **true** | ✅ Siempre activo, prefiere tu sesión |
-| **true** | **false** | ⏸️ Activo pero solo en otra sesión si preferida está fuera |
-| **false** | **true** | ⏸️ Solo operación en sesión preferida |
-| **false** | **false** | ⏸️ Solo operación en sesión preferida |
+### 2️⃣ 24/7 TRADING - CONTROLS
 
-**RECOMENDADO PARA TI:**
+```
+Enable24x7 = true          // YES = 24-hour trading | NO = Preferred session only
+TradeOutOfPreferred = true // YES = Also trade outside the preferred session
+```
+
+**COMBINATIONS:**
+
+| Enable24x7 | TradeOutOfPreferred | Behavior |
+|------------|---------------------|----------|
+| **true** | **true** | ✅ Always active, prefers your selected session |
+| **true** | **false** | ⏸️ Active but only trades in another session if the preferred session is unavailable |
+| **false** | **true** | ⏸️ Trades only during the preferred session |
+| **false** | **false** | ⏸️ Trades only during the preferred session |
+
+**RECOMMENDED FOR YOU:**
 ```
 Enable24x7 = true
 TradeOutOfPreferred = true
-PreferredSession = "NY"  // O "ASIA_OPEN" según tu preferencia
+PreferredSession = "NY"  // Or "ASIA_OPEN" according to your preference
 ```
 
 ---
 
-## 📊 SESIONES DISPONIBLES 24/7
+## 📊 AVAILABLE 24/7 SESSIONS
 
-### 🌏 ASIA PRE-APERTURA
-```
-Horario UTC: 20:00 - 22:00 (2 horas)
-Horario COL: 15:00 - 17:00
-Esperado WR: 83.3%
-Tipo: 90% INTRADIA
-RR Típico: 4.2x
-Pips Típico: 100
-```
+### 🌏 ASIA PRE-OPEN
 
-### 🌏 ASIA APERTURA
 ```
-Horario UTC: 22:00 - 06:00 (8 horas)
-Horario COL: 17:00 - 01:00 (siguiente día)
-Esperado WR: 83.3%
-Tipo: 70% INTRADIA + 30% SWING
-RR Típico: 4.8x
-Pips Típico: 120
+UTC Schedule: 20:00 - 22:00 (2 Hours)
+COL Schedule: 15:00 - 17:00
+Expected WR: 83.3%
+Type: 90% INTRADAY
+Typical RR: 4.2x
+Typical Pips: 100
 ```
 
-### 🗽 NUEVA YORK (PREFERIDA)
+### 🌏 ASIA OPEN
+
 ```
-Horario UTC: 13:00 - 21:00 (8 horas)
-Horario COL: 08:00 - 16:00
-Esperado WR: 91.4% ⭐⭐⭐
-Tipo: 60% SWING + 40% INTRADIA
-RR Típico: 6.5x
-Pips Típico: 160
-Mejor horario: 14:00-16:00 UTC (95% WR)
+UTC Schedule: 22:00 - 06:00 (8 Hours)
+COL Schedule: 17:00 - 01:00 (Next Day)
+Expected WR: 83.3%
+Type: 70% INTRADAY + 30% SWING
+Typical RR: 4.8x
+Typical Pips: 120
+```
+
+### 🗽 NEW YORK (PREFERRED)
+
+```
+UTC Schedule: 13:00 - 21:00 (8 Hours)
+COL Schedule: 08:00 - 16:00
+Expected WR: 91.4% ⭐⭐⭐
+Type: 60% SWING + 40% INTRADAY
+Typical RR: 6.5x
+Typical Pips: 160
+Best Trading Time: 14:00-16:00 UTC (95% WR)
 ```
 
 ---
 
-## 🎛️ PARÁMETROS DE TRADING
+## 🎛️ TRADING PARAMETERS
 
 ```
 ╔══════════════════════════════════╗
-║     SWING + INTRADIA ONLY        ║
+║      SWING + INTRADAY ONLY       ║
 ╠══════════════════════════════════╣
 ║ MinPips = 80                     ║
-║ MinRRRatio = 4.0x               ║
+║ MinRRRatio = 4.0x                ║
 ║ MinConfluenceScore = 82.0        ║
 ║ NO SCALPING                      ║
 ╚══════════════════════════════════╝
 ```
 
 ### Account Config
-```
-AccountBalance = 2500.0     // Tu capital
-RiskPercentage = 2.0        // Riesgo por trade
+
+```cpp
+AccountBalance = 2500.0     // Your Account Balance
+RiskPercentage = 2.0        // Risk per Trade
 ```
 
 ### Technical Parameters
-```
+
+```cpp
 BOS_LookBack = 50           // Break of Structure
 CHOCH_LookBack = 50         // Change of Character
 FVG_ScanBars = 80           // Fair Value Gaps
@@ -111,89 +116,90 @@ OB_ScanBars = 120           // Order Blocks
 ```
 
 ### Volatility Filter
-```
-UseVolatilityFilter = true  // Filtrar volatilidad extrema
-MaxATR = 250.0              // ATR máximo permitido
+
+```cpp
+UseVolatilityFilter = true  // Filter Extreme Volatility
+MaxATR = 250.0              // Maximum Allowed ATR
 ```
 
 ---
 
-## 🚀 CÓMO USAR
+## 🚀 HOW TO USE
 
-### OPCIÓN 1: Operación 24/7 con preferencia
+### OPTION 1: 24/7 Trading with Preference
 
 ```ini
 [SESSION PREFERENCE]
-PreferredSession = "NY"          # Tu sesión favorita
+PreferredSession = "NY"          # Your Favorite Session
 
-[OPERACIÓN 24/7]
-Enable24x7 = true               # SIEMPRE ACTIVO
-TradeOutOfPreferred = true       # También opera otras sesiones
+[24/7 TRADING]
+Enable24x7 = true                # ALWAYS ACTIVE
+TradeOutOfPreferred = true       # Also Trade Other Sessions
 
-RESULTADO: Operará 24 horas, priorizando NY
+RESULT: Trades 24 hours, prioritizing NY
 ```
 
-### OPCIÓN 2: Operación 24/7 pero solo en sesión preferida
+### OPTION 2: 24/7 Trading but Only During the Preferred Session
 
 ```ini
 [SESSION PREFERENCE]
-PreferredSession = "ASIA_OPEN"   # Cambiar a tu sesión
+PreferredSession = "ASIA_OPEN"   # Change to Your Preferred Session
 
-[OPERACIÓN 24/7]
-Enable24x7 = false               # Solo sesión preferida
+[24/7 TRADING]
+Enable24x7 = false               # Preferred Session Only
 TradeOutOfPreferred = false
 
-RESULTADO: Operará SOLO cuando ASIA_OPEN esté activa (22:00-06:00 UTC)
+RESULT: Trades ONLY when ASIA_OPEN is active (22:00-06:00 UTC)
 ```
 
-### OPCIÓN 3: Multi-sesión con restricciones
+### OPTION 3: Multi-Session with Restrictions
 
 ```ini
 [SESSION PREFERENCE]
 PreferredSession = "NY"
 
-[OPERACIÓN 24/7]
+[24/7 TRADING]
 Enable24x7 = true
 TradeOutOfPreferred = false
 
-RESULTADO: Operará en NY principalmente, pero también en otras sesiones si es necesario
+RESULT: Trades mainly in NY, but also in other sessions if necessary
 ```
 
 ---
 
-## 📈 SALIDA DEL EA
+## 📈 EA OUTPUT
 
-El EA genera archivo JSON: `SIGNAL_24x7.json`
+The EA generates a JSON file: `SIGNAL_24x7.json`
 
 ```json
 {
   "system": "TheGhostMachine v6.01 24x7 ASIA+NY",
-  "mode": "24/7 OPERACIÓN",
-  "operation_hours": "Siempre Activo",
+  "mode": "24/7 TRADING",
+  "operation_hours": "Always Active",
   "preferred_session": "NY",
   "timestamp": "2026-06-04 22:45",
-  
+
   "sessions": {
     "ASIA_PRE": {
-      "name": "🌏 ASIA PRE-APERTURA (20:00-22:00 UTC)",
+      "name": "🌏 ASIA PRE-OPEN (20:00-22:00 UTC)",
       "is_active": false,
       "is_preferred": false,
       "expected_wr": 83.3%
     },
     "ASIA_OPEN": {
-      "name": "🌏 ASIA APERTURA (22:00-06:00 UTC)",
+      "name": "🌏 ASIA OPEN (22:00-06:00 UTC)",
       "is_active": true,
       "is_preferred": false,
       "expected_wr": 83.3%
     },
     "NY": {
-      "name": "🗽 NUEVA YORK (13:00-21:00 UTC) ⭐⭐⭐",
+      "name": "🗽 NEW YORK (13:00-21:00 UTC) ⭐⭐⭐",
       "is_active": false,
       "is_preferred": true,
       "expected_wr": 91.4%
     }
   },
-  
+
   "signal": {
     "valid": true,
     "type": "BUY",
@@ -213,110 +219,113 @@ El EA genera archivo JSON: `SIGNAL_24x7.json`
   }
 }
 ```
-
 ---
 
-## ⏰ HORARIOS EN COLOMBIA (UTC-5)
+## ⏰ COLOMBIA TRADING HOURS (UTC-5)
 
-| Sesión | UTC | COL | Descripción |
+| Session | UTC | COL | Description |
 |--------|-----|-----|-------------|
-| **ASIA PRE** | 20:00-22:00 | 15:00-17:00 | Tarde |
-| **ASIA OPEN** | 22:00-06:00 | 17:00-01:00 | Tarde + noche |
-| **NY** | 13:00-21:00 | 08:00-16:00 | Mañana + tarde |
+| **ASIA PRE** | 20:00-22:00 | 15:00-17:00 | Afternoon |
+| **ASIA OPEN** | 22:00-06:00 | 17:00-01:00 | Afternoon + Night |
+| **NY** | 13:00-21:00 | 08:00-16:00 | Morning + Afternoon |
 
 ---
 
-## 🎯 REGLAS INMUTABLES
+## 🎯 IMMUTABLE RULES
 
 ✅ **ALWAYS:**
-- Minimum 80 pips por trade
-- RR mínimo 4.0x
-- SWING + INTRADIA ONLY (sin scalping)
-- Confluencia Multi-timeframe
+- Minimum 80 pips per trade
+- Minimum RR of 4.0x
+- SWING + INTRADAY ONLY (No Scalping)
+- Multi-Timeframe Confluence
 - Score ≥ 82
-- Validar sesión activa
+- Validate Active Session
 
 ❌ **NEVER:**
-- Operar < 80 pips (scalping)
+- Trade < 80 pips (Scalping)
 - RR < 4.0x
-- Ignorar filtro de volatilidad
-- Múltiples trades en 24h sin validación
-- Opera fuera de sesiones activas
+- Ignore the Volatility Filter
+- Multiple Trades within 24h without Validation
+- Trade Outside Active Sessions
 
 ---
 
 ## 🔧 TROUBLESHOOTING
 
-### "Sin señal válida"
-```
-✓ Verificar que sesión esté activa
-✓ Revisar confluencia en H4 + H1
-✓ Validar que pips ≥ 80
-✓ Comprobar RR ≥ 4.0x
-✓ Chequear ATR si filtro está activo
+### "No Valid Signal"
+
+```text
+✓ Verify that the session is active
+✓ Check confluence on H4 + H1
+✓ Validate that pips ≥ 80
+✓ Confirm RR ≥ 4.0x
+✓ Check ATR if the filter is enabled
 ```
 
-### "FUERA DE HORARIO"
-```
-✓ Enable24x7 = false → Esperar sesión preferida
-✓ Enable24x7 = true + TradeOutOfPreferred = false → Operando pero sin sesión preferida
-✓ Enable24x7 = true + TradeOutOfPreferred = true → Debería estar operando
+### "OUT OF TRADING HOURS"
+
+```text
+✓ Enable24x7 = false → Wait for the preferred session
+✓ Enable24x7 = true + TradeOutOfPreferred = false → Trading is enabled, but the preferred session is inactive
+✓ Enable24x7 = true + TradeOutOfPreferred = true → It should be trading
 ```
 
-### Volatilidad muy alta
-```
-✓ UseVolatilityFilter = true (debe estar activado)
-✓ Reducir MaxATR de 250 a 200
-✓ Esperar volatilidad más baja
+### Very High Volatility
+
+```text
+✓ UseVolatilityFilter = true (Must be enabled)
+✓ Reduce MaxATR from 250 to 200
+✓ Wait for lower volatility
 ```
 
 ---
 
-## 📊 ESTADÍSTICAS ESPERADAS
+## 📊 EXPECTED STATISTICS
 
-```
+```text
 ╔═══════════════════════════════════╗
-║   PERFORMANCE PROYECTADO 24/7     ║
+║     PROJECTED 24/7 PERFORMANCE    ║
 ╠═══════════════════════════════════╣
-║ Win Rate Combinado: 85-88%        ║
-║ RR Promedio: 5.2x                 ║
+║ Combined Win Rate: 85-88%         ║
+║ Average RR: 5.2x                  ║
 ║ Profit Factor: 3.1                ║
-║ Trades por mes: 15-20             ║
-║ ROI Mensual: 8-12%                ║
+║ Trades per Month: 15-20           ║
+║ Monthly ROI: 8-12%                ║
 ╚═══════════════════════════════════╝
 ```
 
 ---
 
-## 🚨 IMPORTANTE
+## 🚨 IMPORTANT
 
-### Backtesting: Agosto-Noviembre 2025
-- ✅ 4 meses de data verificada
-- ✅ 91.4% WR en NY
-- ✅ 83.3% WR en ASIA
-- ✅ Rendimiento real probado
+### Backtesting: August-November 2025
 
-### Configuración Recomendada PARA TI
+- ✅ 4 months of verified data
+- ✅ 91.4% WR in NY
+- ✅ 83.3% WR in ASIA
+- ✅ Real-world performance validated
+
+### RECOMMENDED CONFIGURATION FOR YOU
 
 ```mql5
-// COPIA ESTO EN TUS INPUTS
+// COPY THIS INTO YOUR INPUTS
 
-ChooseSession = "NY";              // Tu preferencia
-Enable24x7 = true;                 // Siempre activo
-TradeOutOfPreferred = true;         // Pero flexible
+ChooseSession = "NY";              // Your Preferred Session
+Enable24x7 = true;                 // Always Active
+TradeOutOfPreferred = true;        // Flexible Trading
 
-AccountBalance = 2500.0;           // Tu capital
-RiskPercentage = 2.0;              // Riesgo prudente
+AccountBalance = 2500.0;           // Your Account Balance
+RiskPercentage = 2.0;              // Conservative Risk
 
-UseVolatilityFilter = true;        // Importante
-MaxATR = 200.0;                    // Conservador
+UseVolatilityFilter = true;        // Important
+MaxATR = 200.0;                    // Conservative
 
-MinPips = 80;                      // Sin scalping
-MinRRRatio = 4.0;                  // Mínimo requerido
+MinPips = 80;                      // No Scalping
+MinRRRatio = 4.0;                  // Minimum Required
 ```
 
 ---
 
-**Última actualización:** 2026-06-04  
-**Versión:** 6.01 - 24x7 MULTISESSION  
+**Last Updated:** 2026-06-04  
+**Version:** 6.01 - 24x7 MULTISESSION  
 **Status:** ✅ PRODUCTION READY
