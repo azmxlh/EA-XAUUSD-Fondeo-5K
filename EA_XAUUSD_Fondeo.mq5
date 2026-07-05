@@ -1,45 +1,45 @@
 #property strict
 #include <Trade\Trade.mqh>
 
-// ================== VARIABLES GLOBALES ==================
+// ================== GLOBAL VARIABLES ==================
 CTrade trade;
 
-// GESTIÓN DE RIESGO
-double LotActual = 0.01;
-double GananciaDiaria = 0;
-double PerdidaDiaria = 0;
-double PerdidaAcumulada = 0;
-double BalanceInicial = 5000;
+// RISK MANAGEMENT
+double CurrentLot = 0.01;
+double DailyProfit = 0;
+double DailyLoss = 0;
+double AccumulatedLoss = 0;
+double InitialBalance = 5000;
 
-const double TP_DIARIO = 500;
-const double SL_DIARIO = 100;
-const double RIESGO_ACUMULADO = 500;
-const int DURACION_MIN_MINUTOS = 5;
+const double DAILY_TP = 500;
+const double DAILY_SL = 100;
+const double ACCUMULATED_RISK = 500;
+const int MIN_DURATION_MINUTES = 5;
 
-// INDICADORES Y PARÁMETROS
+// INDICATORS AND PARAMETERS
 const int RSI_PERIOD = 14;
 const int ATR_PERIOD = 14;
 const int BB_PERIOD = 20;
-const double BB_DESV = 2.0;
+const double BB_DEVIATION = 2.0;
 const int MACD_FAST = 12;
 const int MACD_SLOW = 26;
 const int MACD_SIGNAL = 9;
 
-// NIVELES INSTITUCIONALES
-double ResistenciaPrincipal = 0;
-double SoportePrincipal = 0;
-double ZonaAcumulacion = 0;
-double ZonaDistribucion = 0;
+// INSTITUTIONAL LEVELS
+double MainResistance = 0;
+double MainSupport = 0;
+double AccumulationZone = 0;
+double DistributionZone = 0;
 
-// CONTROL DE SESIONES
-int DiaAnterior = -1;
-bool PausadoHoy = false;
+// SESSION CONTROL
+int PreviousDay = -1;
+bool PausedToday = false;
 
-// ESTADÍSTICAS
+// STATISTICS
 struct TradeStats {
     int totalTrades;
-    int tradesGanadores;
-    int tradesPerdedores;
+    int winningTrades;
+    int losingTrades;
     double winRate;
 };
 
@@ -51,102 +51,102 @@ TradeStats stats = {0, 0, 0, 0};
 int OnInit()
 {
     Print("╔════════════════════════════════════╗");
-    Print("║  EA XAUUSD FONDEO $5K (Wall St)   ║");
-    Print("║  Timeframe: M5 (5 minutos)        ║");
+    Print("║  EA XAUUSD FUNDING $5K (Wall St)  ║");
+    Print("║  Timeframe: M5 (5 minutes)        ║");
     Print("║  Capital: $5,000                  ║");
-    Print("║  Estrategia: Smart Money + Confluence ║");
+    Print("║  Strategy: Smart Money + Confluence ║");
     Print("╚════════════════════════════════════╝");
     
-    BalanceInicial = AccountInfoDouble(ACCOUNT_BALANCE);
-    CalcularNivelesInstitucionales();
+    InitialBalance = AccountInfoDouble(ACCOUNT_BALANCE);
+    CalculateInstitutionalLevels();
     
     return(INIT_SUCCEEDED);
 }
 
 //+------------------------------------------------------------------+
-//| TICK - CORAZÓN DEL EA                                            |
+//| TICK - HEART OF THE EA                                           |
 //+------------------------------------------------------------------+
 void OnTick()
 {
-    // RESETEAR POR DÍA - FIX: Usar TimeCurrent() en lugar de Day()
+    // RESET BY DAY - FIX: Use TimeCurrent() instead of Day()
     MqlDateTime dt;
     TimeToStruct(TimeCurrent(), dt);
     
-    if (DiaAnterior != dt.day)
+    if (PreviousDay != dt.day)
     {
-        GananciaDiaria = 0;
-        PerdidaDiaria = 0;
-        PausadoHoy = false;
-        DiaAnterior = dt.day;
+        DailyProfit = 0;
+        DailyLoss = 0;
+        PausedToday = false;
+        PreviousDay = dt.day;
         
-        Print("═══════ NUEVO DÍA - Balance: $", AccountInfoDouble(ACCOUNT_BALANCE), " ═══════");
-        CalcularNivelesInstitucionales();
+        Print("═══════ NEW DAY - Balance: $", AccountInfoDouble(ACCOUNT_BALANCE), " ═══════");
+        CalculateInstitutionalLevels();
     }
     
-    // 1. VERIFICAR LÍMITES CRÍTICOS
-    if (!VerificarLimitesCriticos()) return;
+    // 1. VERIFY CRITICAL LIMITS
+    if (!VerifyCriticalLimits()) return;
     
-    // 2. RECALCULAR NIVELES DINÁMICAMENTE
-    CalcularNivelesInstitucionales();
+    // 2. RECALCULATE LEVELS DYNAMICALLY
+    CalculateInstitutionalLevels();
     
-    // 3. GESTIÓN DE TRADES ABIERTOS
-    GestionarTradesAbiertos();
+    // 3. MANAGE OPEN TRADES
+    ManageOpenTrades();
     
-    // 4. VERIFICAR OPORTUNIDADES DE ENTRADA
-    if (EsHorarioOperacion24x7())
+    // 4. CHECK ENTRY OPPORTUNITIES
+    if (IsOperationHours24x7())
     {
-        VerificarSenalesEntrada();
+        CheckEntrySignals();
     }
     
-    // 5. MOSTRAR DASHBOARD
-    MostrarDashboard();
+    // 5. SHOW DASHBOARD
+    ShowDashboard();
 }
 
 //+------------------------------------------------------------------+
-//| 🎯 CÁLCULO DE NIVELES INSTITUCIONALES (Smart Money)              |
+//| 🎯 CALCULATION OF INSTITUTIONAL LEVELS (Smart Money)              |
 //+------------------------------------------------------------------+
-void CalcularNivelesInstitucionales()
+void CalculateInstitutionalLevels()
 {
-    // Datos del último HIGH-LOW (volatilidad)
+    // Data from last HIGH-LOW (volatility)
     double High24 = iHigh(_Symbol, PERIOD_D1, 0);
     double Low24 = iLow(_Symbol, PERIOD_D1, 0);
     double Close = iClose(_Symbol, PERIOD_M5, 0);
     
-    // RANGO DE VOLATILIDAD
-    double RangoVolatilidad = High24 - Low24;
+    // VOLATILITY RANGE
+    double VolatilityRange = High24 - Low24;
     
-    // PIVOT POINT (Punto central de trading)
+    // PIVOT POINT (Central trading point)
     double PP = (High24 + Low24 + Close) / 3;
     
-    // RESISTENCIA Y SOPORTE DIARIOS
-    ResistenciaPrincipal = PP + (RangoVolatilidad * 0.618);
-    SoportePrincipal = PP - (RangoVolatilidad * 0.618);
+    // DAILY RESISTANCE AND SUPPORT
+    MainResistance = PP + (VolatilityRange * 0.618);
+    MainSupport = PP - (VolatilityRange * 0.618);
     
-    // ZONA DE ACUMULACIÓN (donde institucionales compran)
-    ZonaAcumulacion = SoportePrincipal - (RangoVolatilidad * 0.382);
+    // ACCUMULATION ZONE (where institutions buy)
+    AccumulationZone = MainSupport - (VolatilityRange * 0.382);
     
-    // ZONA DE DISTRIBUCIÓN (donde institucionales venden)
-    ZonaDistribucion = ResistenciaPrincipal + (RangoVolatilidad * 0.382);
+    // DISTRIBUTION ZONE (where institutions sell)
+    DistributionZone = MainResistance + (VolatilityRange * 0.382);
 }
 
 //+------------------------------------------------------------------+
-//| ✅ VERIFICAR SEÑALES DE ENTRADA (CONFLUENCE)                     |
+//| ✅ CHECK ENTRY SIGNALS (CONFLUENCE)                             |
 //+------------------------------------------------------------------+
-void VerificarSenalesEntrada()
+void CheckEntrySignals()
 {
-    // NO OPERAR si hay muchos trades abiertos
-    if (NumTradesAbiertos() >= 3) return;
+    // DO NOT OPERATE if there are many open trades
+    if (CountOpenTrades() >= 3) return;
     
     double Close = iClose(_Symbol, PERIOD_M5, 0);
     double Ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
     double Bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
     
-    // ========== INDICADOR 1: RSI ==========
+    // ========== INDICATOR 1: RSI ==========
     double RSI = iRSI(_Symbol, PERIOD_M5, RSI_PERIOD, PRICE_CLOSE);
     bool RSI_Oversold = RSI < 30;
     bool RSI_Overbought = RSI > 70;
     
-    // ========== INDICADOR 2: MACD (CORREGIDO) ==========
+    // ========== INDICATOR 2: MACD (CORRECTED) ==========
     int macdHandle = iMACD(_Symbol, PERIOD_M5, MACD_FAST, MACD_SLOW, MACD_SIGNAL, PRICE_CLOSE);
     double macdLine[], macdSignal[];
     ArraySetAsSeries(macdLine, true);
@@ -160,9 +160,9 @@ void VerificarSenalesEntrada()
     bool MACD_BullishCrossover = MACD > MACD_Signal;
     bool MACD_BearishCrossover = MACD < MACD_Signal;
     
-    // ========== INDICADOR 3: BOLLINGER BANDS (CORREGIDO) ==========
-    // FIX: iBands sintaxis correcta: iBands(symbol, period, shift, deviation, applied_price)
-    int bandHandle = iBands(_Symbol, PERIOD_M5, BB_PERIOD, 0, BB_DESV, PRICE_CLOSE);
+    // ========== INDICATOR 3: BOLLINGER BANDS (CORRECTED) ==========
+    // FIX: iBands correct syntax: iBands(symbol, period, shift, deviation, applied_price)
+    int bandHandle = iBands(_Symbol, PERIOD_M5, BB_PERIOD, 0, BB_DEVIATION, PRICE_CLOSE);
     double bbUpper[], bbLower[], bbMiddle[];
     
     ArraySetAsSeries(bbUpper, true);
@@ -177,86 +177,86 @@ void VerificarSenalesEntrada()
     double BB_Lower = (ArraySize(bbLower) > 0) ? bbLower[0] : Ask - 100 * _Point;
     double BB_Middle = (ArraySize(bbMiddle) > 0) ? bbMiddle[0] : Close;
     
-    bool Precio_NearBBLower = Close < BB_Middle && Close > BB_Lower;
-    bool Precio_NearBBUpper = Close > BB_Middle && Close < BB_Upper;
+    bool Price_NearBBLower = Close < BB_Middle && Close > BB_Lower;
+    bool Price_NearBBUpper = Close > BB_Middle && Close < BB_Upper;
     
-    // ========== INDICADOR 4: ATR (Volatilidad) ==========
+    // ========== INDICATOR 4: ATR (Volatility) ==========
     double ATR = iATR(_Symbol, PERIOD_M5, ATR_PERIOD);
-    bool Volatilidad_Optima = ATR > 0.5 && ATR < 3.0;
+    bool OptimalVolatility = ATR > 0.5 && ATR < 3.0;
     
-    // ========== INDICADOR 5: SMART MONEY LEVELS ==========
-    double Precio = Close;
-    double RangoVolatilidad = iHigh(_Symbol, PERIOD_D1, 0) - iLow(_Symbol, PERIOD_D1, 0);
-    bool En_ZonaAcumulacion = Precio >= ZonaAcumulacion && Precio <= SoportePrincipal;
-    bool En_ZonaDistribucion = Precio >= ResistenciaPrincipal && Precio <= ZonaDistribucion;
-    bool Rebote_Soporte = Precio >= SoportePrincipal && Precio <= SoportePrincipal + (RangoVolatilidad * 0.05);
-    bool Rebote_Resistencia = Precio >= ResistenciaPrincipal - (RangoVolatilidad * 0.05) && Precio <= ResistenciaPrincipal;
+    // ========== INDICATOR 5: SMART MONEY LEVELS ==========
+    double Price = Close;
+    double VolatilityRange = iHigh(_Symbol, PERIOD_D1, 0) - iLow(_Symbol, PERIOD_D1, 0);
+    bool In_AccumulationZone = Price >= AccumulationZone && Price <= MainSupport;
+    bool In_DistributionZone = Price >= MainResistance && Price <= DistributionZone;
+    bool Support_Bounce = Price >= MainSupport && Price <= MainSupport + (VolatilityRange * 0.05);
+    bool Resistance_Bounce = Price >= MainResistance - (VolatilityRange * 0.05) && Price <= MainResistance;
     
     // ========== SIGNAL BUY: CONFLUENCE ==========
     int ConfluenceBuy = 0;
     if (RSI_Oversold) ConfluenceBuy++;
     if (MACD_BullishCrossover) ConfluenceBuy++;
-    if (Precio_NearBBLower) ConfluenceBuy++;
-    if (Volatilidad_Optima) ConfluenceBuy++;
-    if (En_ZonaAcumulacion || Rebote_Soporte) ConfluenceBuy++;
+    if (Price_NearBBLower) ConfluenceBuy++;
+    if (OptimalVolatility) ConfluenceBuy++;
+    if (In_AccumulationZone || Support_Bounce) ConfluenceBuy++;
     
     if (ConfluenceBuy >= 3)
     {
-        AbrirCompra(Ask, ConfluenceBuy);
+        OpenBuy(Ask, ConfluenceBuy);
     }
     
     // ========== SIGNAL SELL: CONFLUENCE ==========
     int ConfluenceSell = 0;
     if (RSI_Overbought) ConfluenceSell++;
     if (MACD_BearishCrossover) ConfluenceSell++;
-    if (Precio_NearBBUpper) ConfluenceSell++;
-    if (Volatilidad_Optima) ConfluenceSell++;
-    if (En_ZonaDistribucion || Rebote_Resistencia) ConfluenceSell++;
+    if (Price_NearBBUpper) ConfluenceSell++;
+    if (OptimalVolatility) ConfluenceSell++;
+    if (In_DistributionZone || Resistance_Bounce) ConfluenceSell++;
     
     if (ConfluenceSell >= 3)
     {
-        AbrirVenta(Bid, ConfluenceSell);
+        OpenSell(Bid, ConfluenceSell);
     }
 }
 
 //+------------------------------------------------------------------+
-//| 📈 ABRIR COMPRA CON LÓGICA AVANZADA                              |
+//| 📈 OPEN BUY WITH ADVANCED LOGIC                                  |
 //+------------------------------------------------------------------+
-void AbrirCompra(double Ask, int ConfluenceLevel)
+void OpenBuy(double Ask, int ConfluenceLevel)
 {
     double SL = Ask - 40 * _Point;
     double TP = Ask + (100 + (ConfluenceLevel * 20)) * _Point;
     
-    string Razon = "BUY | Confluence: " + (string)ConfluenceLevel + "/5";
+    string Reason = "BUY | Confluence: " + (string)ConfluenceLevel + "/5";
     
-    if (trade.Buy(LotActual, _Symbol, Ask, SL, TP, Razon))
+    if (trade.Buy(CurrentLot, _Symbol, Ask, SL, TP, Reason))
     {
-        Print("✅ BUY ABIERTO | Ask: ", Ask, " | SL: ", SL, " | TP: ", TP, " | Razón: ", Razon);
+        Print("✅ BUY OPENED | Ask: ", Ask, " | SL: ", SL, " | TP: ", TP, " | Reason: ", Reason);
         stats.totalTrades++;
     }
 }
 
 //+------------------------------------------------------------------+
-//| 📉 ABRIR VENTA CON LÓGICA AVANZADA                               |
+//| 📉 OPEN SELL WITH ADVANCED LOGIC                                 |
 //+------------------------------------------------------------------+
-void AbrirVenta(double Bid, int ConfluenceLevel)
+void OpenSell(double Bid, int ConfluenceLevel)
 {
     double SL = Bid + 40 * _Point;
     double TP = Bid - (100 + (ConfluenceLevel * 20)) * _Point;
     
-    string Razon = "SELL | Confluence: " + (string)ConfluenceLevel + "/5";
+    string Reason = "SELL | Confluence: " + (string)ConfluenceLevel + "/5";
     
-    if (trade.Sell(LotActual, _Symbol, Bid, SL, TP, Razon))
+    if (trade.Sell(CurrentLot, _Symbol, Bid, SL, TP, Reason))
     {
-        Print("✅ SELL ABIERTO | Bid: ", Bid, " | SL: ", SL, " | TP: ", TP, " | Razón: ", Razon);
+        Print("✅ SELL OPENED | Bid: ", Bid, " | SL: ", SL, " | TP: ", TP, " | Reason: ", Reason);
         stats.totalTrades++;
     }
 }
 
 //+------------------------------------------------------------------+
-//| 💰 GESTIÓN DE TRADES ABIERTOS                                    |
+//| 💰 MANAGE OPEN TRADES                                            |
 //+------------------------------------------------------------------+
-void GestionarTradesAbiertos()
+void ManageOpenTrades()
 {
     for (int i = PositionsTotal() - 1; i >= 0; i--)
     {
@@ -266,7 +266,7 @@ void GestionarTradesAbiertos()
             {
                 ulong ticket = PositionGetTicket(i);
                 long timeEntry = PositionGetInteger(POSITION_TIME);
-                long minutosAbiertos = (TimeCurrent() - timeEntry) / 60;
+                long minutesOpen = (TimeCurrent() - timeEntry) / 60;
                 
                 double EntryPrice = PositionGetDouble(POSITION_PRICE_OPEN);
                 double Profit = PositionGetDouble(POSITION_PROFIT);
@@ -276,7 +276,7 @@ void GestionarTradesAbiertos()
                     ? SymbolInfoDouble(_Symbol, SYMBOL_BID)
                     : SymbolInfoDouble(_Symbol, SYMBOL_ASK);
                 
-                // ========== BREAK EVEN DINÁMICO ==========
+                // ========== DYNAMIC BREAK EVEN ==========
                 if ((Type == POSITION_TYPE_BUY && CurrentPrice > EntryPrice + 50 * _Point) ||
                     (Type == POSITION_TYPE_SELL && CurrentPrice < EntryPrice - 50 * _Point))
                 {
@@ -284,7 +284,7 @@ void GestionarTradesAbiertos()
                     if (PositionGetDouble(POSITION_SL) != NewSL)
                     {
                         trade.PositionModify(ticket, NewSL, PositionGetDouble(POSITION_TP));
-                        Print("✅ BREAK EVEN activado | Ticket: ", ticket);
+                        Print("✅ BREAK EVEN activated | Ticket: ", ticket);
                     }
                 }
                 
@@ -303,125 +303,125 @@ void GestionarTradesAbiertos()
                     }
                 }
                 
-                // ========== RE-ENTRY ESCALONADA ==========
-                if (minutosAbiertos >= DURACION_MIN_MINUTOS && Profit > 50)
+                // ========== SCALED RE-ENTRY ==========
+                if (minutesOpen >= MIN_DURATION_MINUTES && Profit > 50)
                 {
-                    if (NumTradesAbiertos() < 3)
+                    if (CountOpenTrades() < 3)
                     {
                         double Ask = SymbolInfoDouble(_Symbol, SYMBOL_ASK);
                         double Bid = SymbolInfoDouble(_Symbol, SYMBOL_BID);
                         
                         if (Type == POSITION_TYPE_BUY)
                         {
-                            AbrirCompra(Ask, 3);
+                            OpenBuy(Ask, 3);
                         }
                         else
                         {
-                            AbrirVenta(Bid, 3);
+                            OpenSell(Bid, 3);
                         }
                     }
                 }
                 
-                // ========== REGISTRO DE ESTADÍSTICAS ==========
+                // ========== STATISTICS LOGGING ==========
                 if (Profit > 0)
-                    stats.tradesGanadores++;
+                    stats.winningTrades++;
                 else
-                    stats.tradesPerdedores++;
+                    stats.losingTrades++;
             }
         }
     }
     
-    // Calcular Win Rate
+    // Calculate Win Rate
     if (stats.totalTrades > 0)
-        stats.winRate = (stats.tradesGanadores / (double)stats.totalTrades) * 100;
+        stats.winRate = (stats.winningTrades / (double)stats.totalTrades) * 100;
 }
 
 //+------------------------------------------------------------------+
-//| ⚠️ VERIFICAR LÍMITES CRÍTICOS                                    |
+//| ⚠️ VERIFY CRITICAL LIMITS                                        |
 //+------------------------------------------------------------------+
-bool VerificarLimitesCriticos()
+bool VerifyCriticalLimits()
 {
-    // 1. PÉRDIDA ACUMULADA
-    if (PerdidaAcumulada >= RIESGO_ACUMULADO)
+    // 1. ACCUMULATED LOSS
+    if (AccumulatedLoss >= ACCUMULATED_RISK)
     {
-        CerrarTodo();
-        Alert("⛔ CUENTA DE FONDEO PERDIDA");
+        CloseAll();
+        Alert("⛔ FUNDED ACCOUNT LOST");
         ExpertRemove();
         return false;
     }
     
-    // 2. PÉRDIDA DIARIA
-    if (PerdidaDiaria <= -SL_DIARIO)
+    // 2. DAILY LOSS
+    if (DailyLoss <= -DAILY_SL)
     {
-        if (!PausadoHoy)
+        if (!PausedToday)
         {
-            CerrarTodo();
-            PausadoHoy = true;
-            Alert("⚠️ LÍMITE DIARIO ALCANZADO: -$", SL_DIARIO);
+            CloseAll();
+            PausedToday = true;
+            Alert("⚠️ DAILY LIMIT REACHED: -$", DAILY_SL);
         }
         return false;
     }
     
-    // 3. GANANCIA DIARIA
-    if (GananciaDiaria >= TP_DIARIO)
+    // 3. DAILY PROFIT
+    if (DailyProfit >= DAILY_TP)
     {
-        CerrarTodo();
-        Alert("✅ META DIARIA ALCANZADA: +$", TP_DIARIO);
-        PausadoHoy = true;
+        CloseAll();
+        Alert("✅ DAILY TARGET REACHED: +$", DAILY_TP);
+        PausedToday = true;
         return false;
     }
     
-    ActualizarPyL();
+    UpdatePyL();
     return true;
 }
 
 //+------------------------------------------------------------------+
-//| 🕐 HORARIO DE OPERACIÓN 24/7                                     |
+//| 🕐 OPERATION HOURS 24/7                                          |
 //+------------------------------------------------------------------+
-bool EsHorarioOperacion24x7()
+bool IsOperationHours24x7()
 {
     MqlDateTime dt;
     TimeToStruct(TimeCurrent(), dt);
-    int hora = dt.hour;
+    int hour = dt.hour;
     
     // Asia: 20:00-04:00 GMT
-    if (hora >= 20 || hora < 4) return true;
+    if (hour >= 20 || hour < 4) return true;
     
-    // Londres: 08:00-17:00 GMT
-    if (hora >= 8 && hora < 17) return true;
+    // London: 08:00-17:00 GMT
+    if (hour >= 8 && hour < 17) return true;
     
     // NY: 13:00-21:00 GMT
-    if (hora >= 13 && hora < 21) return true;
+    if (hour >= 13 && hour < 21) return true;
     
     return false;
 }
 
 //+------------------------------------------------------------------+
-//| 🎲 FUNCIONES AUXILIARES                                          |
+//| 🎲 HELPER FUNCTIONS                                              |
 //+------------------------------------------------------------------+
 
-int NumTradesAbiertos()
+int CountOpenTrades()
 {
-    int contador = 0;
+    int counter = 0;
     for (int i = PositionsTotal() - 1; i >= 0; i--)
     {
         if (PositionSelectByTicket(PositionGetTicket(i)))
         {
             if (PositionGetSymbol(i) == _Symbol)
-                contador++;
+                counter++;
         }
     }
-    return contador;
+    return counter;
 }
 
-void ActualizarPyL()
+void UpdatePyL()
 {
-    double BalanceActual = AccountInfoDouble(ACCOUNT_BALANCE);
-    GananciaDiaria = BalanceActual - BalanceInicial;
-    PerdidaAcumulada = BalanceInicial - BalanceActual;
+    double CurrentBalance = AccountInfoDouble(ACCOUNT_BALANCE);
+    DailyProfit = CurrentBalance - InitialBalance;
+    AccumulatedLoss = InitialBalance - CurrentBalance;
 }
 
-void CerrarTodo()
+void CloseAll()
 {
     for (int i = PositionsTotal() - 1; i >= 0; i--)
     {
@@ -435,7 +435,7 @@ void CerrarTodo()
     }
 }
 
-void MostrarDashboard()
+void ShowDashboard()
 {
     double Balance = AccountInfoDouble(ACCOUNT_BALANCE);
     double Equity = AccountInfoDouble(ACCOUNT_EQUITY);
@@ -445,30 +445,30 @@ void MostrarDashboard()
             "╠════════════════════════════════════╣\n",
             "║ Balance: $", DoubleToString(Balance, 2), "\n",
             "║ Equity: $", DoubleToString(Equity, 2), "\n",
-            "║ Ganancia Hoy: $", DoubleToString(GananciaDiaria, 2), " / +$", TP_DIARIO, "\n",
-            "║ Pérdida Hoy: $", DoubleToString(PerdidaDiaria, 2), " / -$", SL_DIARIO, "\n",
-            "║ Pérdida Acumulada: -$", DoubleToString(PerdidaAcumulada, 2), " / -$", RIESGO_ACUMULADO, "\n",
+            "║ Daily Profit: $", DoubleToString(DailyProfit, 2), " / +$", DAILY_TP, "\n",
+            "║ Daily Loss: $", DoubleToString(DailyLoss, 2), " / -$", DAILY_SL, "\n",
+            "║ Accumulated Loss: -$", DoubleToString(AccumulatedLoss, 2), " / -$", ACCUMULATED_RISK, "\n",
             "╠════════════════════════════════════╣\n",
-            "║ Trades Abiertos: ", NumTradesAbiertos(), "/3\n",
+            "║ Open Trades: ", CountOpenTrades(), "/3\n",
             "║ Total Trades: ", stats.totalTrades, "\n",
             "║ Win Rate: ", DoubleToString(stats.winRate, 1), "%\n",
-            "║ Ganadores: ", stats.tradesGanadores, " | Perdedores: ", stats.tradesPerdedores, "\n",
+            "║ Winners: ", stats.winningTrades, " | Losers: ", stats.losingTrades, "\n",
             "╠════════════════════════════════════╣\n",
-            "║ Soporte: ", DoubleToString(SoportePrincipal, 2), "\n",
-            "║ Resistencia: ", DoubleToString(ResistenciaPrincipal, 2), "\n",
-            "║ Zona Acum: ", DoubleToString(ZonaAcumulacion, 2), "\n",
-            "║ Zona Dist: ", DoubleToString(ZonaDistribucion, 2), "\n",
+            "║ Support: ", DoubleToString(MainSupport, 2), "\n",
+            "║ Resistance: ", DoubleToString(MainResistance, 2), "\n",
+            "║ Accum Zone: ", DoubleToString(AccumulationZone, 2), "\n",
+            "║ Dist Zone: ", DoubleToString(DistributionZone, 2), "\n",
             "╠════════════════════════════════════╣\n",
-            "║ Estado: ", PausadoHoy ? "⏸️ PAUSADO" : (EsHorarioOperacion24x7() ? "✅ OPERANDO" : "❌ FUERA HORARIO"), "\n",
+            "║ Status: ", PausedToday ? "⏸️ PAUSED" : (IsOperationHours24x7() ? "✅ OPERATING" : "❌ OUTSIDE HOURS"), "\n",
             "╚════════════════════════════════════╝");
 }
 
 void OnDeinit(const int reason)
 {
     Print("════════════════════════════════════");
-    Print("EA DETENIDO");
+    Print("EA STOPPED");
     Print("Total Trades: ", stats.totalTrades);
-    Print("Win Rate Final: ", DoubleToString(stats.winRate, 1), "%");
-    Print("Balance Final: $", AccountInfoDouble(ACCOUNT_BALANCE));
+    Print("Final Win Rate: ", DoubleToString(stats.winRate, 1), "%");
+    Print("Final Balance: $", AccountInfoDouble(ACCOUNT_BALANCE));
     Print("════════════════════════════════════");
 }
