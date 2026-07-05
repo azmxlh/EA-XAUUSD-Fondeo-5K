@@ -1,4 +1,4 @@
-# 🏛️ EA XAUUSD FONDEO $5K - Wall Street Level
+# 🏛️ EA XAUUSD FUND $5K - Wall Street Level
 
 **Automated Expert Advisor for XAUUSD (Gold)**  
 Designed for funded account operations with institutional-level risk management
