@@ -1,32 +1,32 @@
 //+------------------------------------------------------------------+
 //|   TheGhostMachine_24x7_ASIA_NY.mq5                               |
-//|   OPERACIÓN 24 HORAS | ASIA + NY | SWING + INTRADIA              |
-//|   Backtesting: Agosto-Noviembre 2025 (4 Meses Verificado)        |
-//|   RECONFIGURED: TÚ ELIGES SESIÓN | SIEMPRE ACTIVO                |
+//|   24 HOUR OPERATION | ASIA + NY | SWING + INTRADAY              |
+//|   Backtesting: August-November 2025 (4 Months Verified)          |
+//|   RECONFIGURED: YOU CHOOSE SESSION | ALWAYS ACTIVE               |
 //+------------------------------------------------------------------+
 #property copyright "TheGhostMachine Professional — 2026"
 #property version   "6.02"
-#property description "24/7 OPERACIÓN | ASIA + NY | Choose Session | Siempre Activo"
+#property description "24/7 OPERATION | ASIA + NY | Choose Session | Always Active"
 #property script_show_inputs
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// 🔧 CONFIGURACION — 24/7 ACTIVO | TÚ ELIGES LA SESION PREFERIDA
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// 🔧 CONFIGURATION — 24/7 ACTIVE | YOU CHOOSE YOUR PREFERRED SESSION
+// ═════════════════════════════════════════════════════════════════
 
-input group "=== 🌍 SESSION PREFERENCE - ELIJE TU SESIÓN PREFERIDA ==="
+input group "=== 🌍 SESSION PREFERENCE - CHOOSE YOUR PREFERRED SESSION ==="
 input string PreferredSession    = "NY";  
-// Opciones: "ASIA_PRE" / "ASIA_OPEN" / "NY"
-// NOTA: El EA operará 24/7 pero PRIORIZARÁ tu sesión elegida
+// Options: "ASIA_PRE" / "ASIA_OPEN" / "NY"
+// NOTE: The EA will operate 24/7 but will PRIORITIZE your chosen session
 
-input group "=== ⏰ OPERACIÓN 24/7 ==="
-input bool Enable24x7           = true;   // SI = Siempre activo | NO = Solo sesión preferida
-input bool TradeOutOfPreferred  = true;   // SI = Opera también fuera de sesión preferida
+input group "=== ⏰ 24/7 OPERATION ==="
+input bool Enable24x7           = true;   // YES = Always active | NO = Only preferred session
+input bool TradeOutOfPreferred  = true;   // YES = Also trades outside preferred session
 
 input group "=== ACCOUNT CONFIG ==="
 input double AccountBalance     = 2500.0;
 input double RiskPercentage     = 2.0;
 
-input group "=== PARAMETERS - SWING+INTRADIA ONLY ==="
+input group "=== PARAMETERS - SWING+INTRADAY ONLY ==="
 input int    BOS_LookBack       = 50;
 input int    CHOCH_LookBack     = 50;
 input int    FVG_ScanBars       = 80;
@@ -36,15 +36,15 @@ input double MinRRRatio         = 4.0;
 input int    MinPips            = 80;    // NO pips < 80 (NO SCALPING)
 
 input group "=== VOLATILITY FILTER ==="
-input bool UseVolatilityFilter  = true;   // Filtrar volatilidad extrema
-input double MaxATR             = 250.0; // ATR máximo permitido
+input bool UseVolatilityFilter  = true;   // Filter extreme volatility
+input double MaxATR             = 250.0; // Maximum allowed ATR
 
 input group "=== OUTPUT ==="
 input string OutputFolder        = "TheGhostMachine";
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// ESTRUCTURAS Y VARIABLES GLOBALES
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// STRUCTURES AND GLOBAL VARIABLES
+// ═════════════════════════════════════════════════════════════════
 
 struct SessionConfig
 {
@@ -86,9 +86,9 @@ OptimizedSignal g_signal;
 int g_total_signals_today = 0;
 string g_last_signal_date = "";
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// FUNCIONES AUXILIARES
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// AUXILIARY FUNCTIONS
+// ═════════════════════════════════════════════════════════════════
 
 double GetPip()
 {
@@ -115,21 +115,21 @@ double GetCurrentATR(int period = 14)
 
 bool IsTimeInRange(int currentHour, int startHour, int endHour)
 {
-   // Maneja ranges que cruzan la medianoche (ej: 22:00 a 06:00)
+   // Handles ranges that cross midnight (e.g: 22:00 to 06:00)
    if(endHour < startHour)
       return (currentHour >= startHour || currentHour < endHour);
    else
       return (currentHour >= startHour && currentHour < endHour);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// INICIALIZAR SESIONES
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// INITIALIZE SESSIONS
+// ═════════════════════════════════════════════════════════════════
 
 void InitializeSessions()
 {
-   // ASIA PRE-APERTURA
-   g_sessions[0].name = "🌏 ASIA PRE-APERTURA (20:00-22:00 UTC)";
+   // ASIA PRE-OPENING
+   g_sessions[0].name = "🌏 ASIA PRE-OPENING (20:00-22:00 UTC)";
    g_sessions[0].code = "ASIA_PRE";
    g_sessions[0].start_hour = 20;
    g_sessions[0].end_hour = 22;
@@ -139,8 +139,8 @@ void InitializeSessions()
    g_sessions[0].pips_typical = 100;
    g_sessions[0].is_preferred = (PreferredSession == "ASIA_PRE");
 
-   // ASIA APERTURA
-   g_sessions[1].name = "🌏 ASIA APERTURA (22:00-06:00 UTC)";
+   // ASIA OPENING
+   g_sessions[1].name = "🌏 ASIA OPENING (22:00-06:00 UTC)";
    g_sessions[1].code = "ASIA_OPEN";
    g_sessions[1].start_hour = 22;
    g_sessions[1].end_hour = 6;
@@ -150,8 +150,8 @@ void InitializeSessions()
    g_sessions[1].pips_typical = 120;
    g_sessions[1].is_preferred = (PreferredSession == "ASIA_OPEN");
 
-   // NUEVA YORK
-   g_sessions[2].name = "🗽 NUEVA YORK (13:00-21:00 UTC) ⭐⭐⭐";
+   // NEW YORK
+   g_sessions[2].name = "🗽 NEW YORK (13:00-21:00 UTC) ⭐⭐⭐";
    g_sessions[2].code = "NY";
    g_sessions[2].start_hour = 13;
    g_sessions[2].end_hour = 21;
@@ -162,9 +162,9 @@ void InitializeSessions()
    g_sessions[2].is_preferred = (PreferredSession == "NY");
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// DETECTAR SESIONES ACTIVAS
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// DETECT ACTIVE SESSIONS
+// ═════════════════════════════════════════════════════════════════
 
 void DetectActiveSessions()
 {
@@ -180,7 +180,7 @@ void DetectActiveSessions()
 
 bool GetCurrentSession(SessionConfig &session)
 {
-   // Retorna la sesión preferida si está activa
+   // Returns the preferred session if it is active
    for(int i = 0; i < 3; i++)
    {
       if(g_sessions[i].is_preferred && g_sessions[i].is_active)
@@ -190,7 +190,7 @@ bool GetCurrentSession(SessionConfig &session)
       }
    }
 
-   // Si preferida no está activa pero 24x7 está habilitado, retorna cualquier activa
+   // If preferred is not active but 24x7 is enabled, returns any active session
    if(Enable24x7 && TradeOutOfPreferred)
    {
       for(int i = 0; i < 3; i++)
@@ -203,13 +203,13 @@ bool GetCurrentSession(SessionConfig &session)
       }
    }
 
-   // Si nada está activo, retorna false
+   // If nothing is active, return false
    return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// DETECCIÓN DE TENDENCIA - MULTI-TIMEFRAME
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// TREND DETECTION - MULTI-TIMEFRAME
+// ═════════════════════════════════════════════════════════════════
 
 string DetectTrend(ENUM_TIMEFRAMES tf)
 {
@@ -222,7 +222,7 @@ string DetectTrend(ENUM_TIMEFRAMES tf)
    double h[3], l[3];
    int hc = 0, lc = 0;
 
-   // Encontrar 3 últimos highs locales
+   // Find last 3 local highs
    for(int i = 3; i < 45 && hc < 3; i++)
    {
       if(r[i].high > r[i+1].high && r[i].high > r[i-1].high && 
@@ -232,7 +232,7 @@ string DetectTrend(ENUM_TIMEFRAMES tf)
       }
    }
 
-   // Encontrar 3 últimos lows locales
+   // Find last 3 local lows
    for(int i = 3; i < 45 && lc < 3; i++)
    {
       if(r[i].low < r[i+1].low && r[i].low < r[i-1].low && 
@@ -244,11 +244,11 @@ string DetectTrend(ENUM_TIMEFRAMES tf)
 
    if(hc >= 2 && lc >= 2)
    {
-      // ALCISTA: Highs y Lows crecientes
+      // BULLISH: Rising Highs and Lows
       if(h[0] < h[1] && l[0] < l[1])
          return "BULLISH";
       
-      // BAJISTA: Highs y Lows decrecientes
+      // BEARISH: Falling Highs and Lows
       if(h[0] > h[1] && l[0] > l[1])
          return "BEARISH";
    }
@@ -256,21 +256,21 @@ string DetectTrend(ENUM_TIMEFRAMES tf)
    return "RANGING";
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// GENERAR SEÑAL (CORREGIDO: SessionConfig por referencia)
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// GENERATE SIGNAL (CORRECTED: SessionConfig by reference)
+// ═════════════════════════════════════════════════════════════════
 
 bool GenerateSignal(SessionConfig &session)
 {
    double price = SymbolInfoDouble(_Symbol, SYMBOL_BID);
    
-   // Detectar tendencia en múltiples timeframes
+   // Detect trend on multiple timeframes
    string d1 = DetectTrend(PERIOD_D1);
    string h4 = DetectTrend(PERIOD_H4);
    string h1 = DetectTrend(PERIOD_H1);
    string m15 = DetectTrend(PERIOD_M15);
 
-   // Validar confluencia: H4 y H1 deben coincidir
+   // Validate confluence: H4 and H1 must match
    if((h4 == "BULLISH" || h4 == "BEARISH") && h1 == h4)
    {
       if(h4 == "BULLISH")
@@ -292,10 +292,10 @@ bool GenerateSignal(SessionConfig &session)
       g_signal.estimated_pips = pips;
       g_signal.rr = (pips > 0) ? pips / 20.0 : 0;
 
-      // ════════ VALIDACIONES ════════
+      // ════════ VALIDATIONS ════════
       if(pips >= MinPips && g_signal.rr >= MinRRRatio)
       {
-         // Validar ATR si está habilitado el filtro
+         // Validate ATR if filter is enabled
          if(UseVolatilityFilter)
          {
             double atr = GetCurrentATR();
@@ -303,21 +303,21 @@ bool GenerateSignal(SessionConfig &session)
             
             if(atr > MaxATR)
             {
-               Print("⚠️ ATR muy alto (", atr, ") - Señal DESCARTADA por volatilidad");
+               Print("⚠️ ATR too high (", atr, ") - Signal REJECTED due to volatility");
                return false;
             }
          }
 
-         // Determinar tipo de trade
+         // Determine trade type
          if(pips >= 150)
          {
             g_signal.trade_type = "SWING";
-            g_signal.probability = session.expected_wr; // 83.3% o 91.4%
+            g_signal.probability = session.expected_wr; // 83.3% or 91.4%
          }
          else
          {
-            g_signal.trade_type = "INTRADIA";
-            g_signal.probability = session.expected_wr - 2.0; // Ligero descuento
+            g_signal.trade_type = "INTRADAY";
+            g_signal.probability = session.expected_wr - 2.0; // Slight discount
          }
 
          g_signal.valid = true;
@@ -333,23 +333,23 @@ bool GenerateSignal(SessionConfig &session)
    return false;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// GUARDAR SEÑAL EN JSON
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
+// SAVE SIGNAL TO JSON
+// ═════════════════════════════════════════════════════════════════
 
 void WriteSignalJSON()
 {
    int fh = FileOpen(OutputFolder + "/SIGNAL_24x7.json", FILE_WRITE | FILE_TXT | FILE_ANSI);
    if(fh == INVALID_HANDLE)
    {
-      Print("Error: No se pudo crear archivo JSON");
+      Print("Error: Could not create JSON file");
       return;
    }
 
    FileWrite(fh, "{");
    FileWrite(fh, "  \"system\": \"TheGhostMachine v6.02 24x7 ASIA+NY\",");
-   FileWrite(fh, "  \"mode\": \"24/7 OPERACIÓN\",");
-   FileWrite(fh, "  \"operation_hours\": \"Siempre Activo\",");
+   FileWrite(fh, "  \"mode\": \"24/7 OPERATION\",");
+   FileWrite(fh, "  \"operation_hours\": \"Always Active\",");
    FileWrite(fh, "  \"preferred_session\": \"" + PreferredSession + "\",");
    FileWrite(fh, "  \"timestamp\": \"" + TimeToString(TimeCurrent(), TIME_DATE | TIME_MINUTES) + "\",");
    FileWrite(fh, "");
@@ -389,7 +389,7 @@ void WriteSignalJSON()
    }
    else
    {
-      FileWrite(fh, "    \"message\": \"Sin señal válida. Esperar siguiente setup.\"");
+      FileWrite(fh, "    \"message\": \"No valid signal. Waiting for next setup.\"");
    }
 
    FileWrite(fh, "  }");
@@ -397,9 +397,9 @@ void WriteSignalJSON()
    FileClose(fh);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
 // MAIN - OnStart
-// ═══════════════════════════════════════════════════════════════════════════════
+// ═════════════════════════════════════════════════════════════════
 
 void OnStart()
 {
@@ -409,7 +409,7 @@ void OnStart()
    g_signal.valid = false;
    g_signal.atr_value = 0;
 
-   // ════════ LÓGICA 24/7 ════════
+   // ════════ 24/7 LOGIC ════════
    SessionConfig currentSession;
    bool hasSession = GetCurrentSession(currentSession);
    
@@ -417,29 +417,29 @@ void OnStart()
    {
       if(!Enable24x7)
       {
-         Alert("❌ FUERA DE HORARIO | Sesión preferida no activa: " + PreferredSession);
+         Alert("❌ OUT OF HOURS | Preferred session not active: " + PreferredSession);
       }
       else if(!TradeOutOfPreferred)
       {
-         Alert("❌ FUERA DE HORARIO | Esperando sesión preferida: " + PreferredSession);
+         Alert("❌ OUT OF HOURS | Waiting for preferred session: " + PreferredSession);
       }
       WriteSignalJSON();
       return;
    }
 
-   // ════════ GENERAR SEÑAL ════════
+   // ════════ GENERATE SIGNAL ════════
    if(GenerateSignal(currentSession))
    {
-      // Validaciones finales
+      // Final validations
       if(g_signal.estimated_pips < MinPips)
       {
-         Alert("⚠️ Pips insuficientes (" + IntegerToString(g_signal.estimated_pips) + " < " + IntegerToString(MinPips) + ")");
+         Alert("⚠️ Insufficient pips (" + IntegerToString(g_signal.estimated_pips) + " < " + IntegerToString(MinPips) + ")");
          g_signal.valid = false;
       }
 
       if(g_signal.rr < MinRRRatio)
       {
-         Alert("⚠️ RR insuficiente (" + DoubleToString(g_signal.rr, 2) + " < " + DoubleToString(MinRRRatio, 1) + ")");
+         Alert("⚠️ Insufficient RR (" + DoubleToString(g_signal.rr, 2) + " < " + DoubleToString(MinRRRatio, 1) + ")");
          g_signal.valid = false;
       }
    }
@@ -450,12 +450,12 @@ void OnStart()
    if(g_signal.valid)
    {
       string msg = "\n╔════════════════════════════════════╗\n";
-      msg += "║ ✅ SEÑAL VÁLIDA - EJECUCIÓN       ║\n";
+      msg += "║ ✅ VALID SIGNAL - EXECUTION       ║\n";
       msg += "╠════════════════════════════════════╣\n";
-      msg += "║ Sistema: TheGhostMachine v6.02    ║\n";
-      msg += "║ Modo: 24/7 OPERACIÓN              ║\n";
-      msg += "║ Sesión: " + g_signal.session_code + StringFill(" ", 22 - StringLen(g_signal.session_code)) + " ║\n";
-      msg += "║ Tipo: " + g_signal.trade_type + " | " + (g_signal.buy ? "BUY" : "SELL") + StringFill(" ", 20 - StringLen(g_signal.trade_type) - (g_signal.buy ? 3 : 4)) + " ║\n";
+      msg += "║ System: TheGhostMachine v6.02     ║\n";
+      msg += "║ Mode: 24/7 OPERATION              ║\n";
+      msg += "║ Session: " + g_signal.session_code + StringFill(" ", 22 - StringLen(g_signal.session_code)) + " ║\n";
+      msg += "║ Type: " + g_signal.trade_type + " | " + (g_signal.buy ? "BUY" : "SELL") + StringFill(" ", 20 - StringLen(g_signal.trade_type) - (g_signal.buy ? 3 : 4)) + " ║\n";
       msg += "║ Entry: " + DoubleToString(g_signal.entry, _Digits) + StringFill(" ", 25 - StringLen(DoubleToString(g_signal.entry, _Digits))) + " ║\n";
       msg += "║ SL: " + DoubleToString(g_signal.sl, _Digits) + StringFill(" ", 28 - StringLen(DoubleToString(g_signal.sl, _Digits))) + " ║\n";
       msg += "║ TP: " + DoubleToString(g_signal.tp, _Digits) + StringFill(" ", 28 - StringLen(DoubleToString(g_signal.tp, _Digits))) + " ║\n";
@@ -468,7 +468,7 @@ void OnStart()
    }
    else
    {
-      Alert("❌ Sin señal válida. Esperar siguiente setup. [" + g_signal.session_code + "]");
+      Alert("❌ No valid signal. Waiting for next setup. [" + g_signal.session_code + "]");
    }
 }
 
