@@ -1,356 +1,370 @@
 # 📊 BACKTEST REPORT - EA XAUUSD FONDEO $5K
 
-## 📈 RESUMEN EJECUTIVO
+## 📈 EXECUTIVE SUMMARY
 
-**Período de prueba:** Últimos 6 meses (XAUUSD histórico)  
-**Capital inicial:** $5,000  
-**Objetivo Fase 1:** $500 de ganancia  
-**Fecha reporte:** 2026-06-04
+**Test Period:** Last 6 months (Historical XAUUSD)  
+**Initial Capital:** $5,000  
+**Phase 1 Target:** $500 Profit  
+**Report Date:** 2026-06-04
 
 ---
 
-## 🎯 RESULTADOS PRINCIPALES
+## 🎯 MAIN RESULTS
 
 ```
 ╔════════════════════════════════════════╗
-║          MÉTRICAS GENERALES            ║
+║          GENERAL METRICS               ║
 ╠════════════════════════════════════════╣
-║ Total de Trades               92       ║
-║ Trades Ganadores              61       ║
-║ Trades Perdedores             31       ║
-║ Win Rate                     66.3%     ║
-║ Loss Rate                    33.7%     ║
+║ Total Trades                  92       ║
+║ Winning Trades                61       ║
+║ Losing Trades                 31       ║
+║ Win Rate                    66.3%      ║
+║ Loss Rate                   33.7%      ║
 ╠════════════════════════════════════════╣
-║ Ganancia Bruta            $3,847.50    ║
-║ Pérdida Bruta            ($2,142.00)   ║
-║ Ganancia Neta             $1,705.50    ║
-║ ROI (6 meses)               34.1%      ║
-║ ROI Mensual Promedio          5.7%     ║
+║ Gross Profit             $3,847.50     ║
+║ Gross Loss             ($2,142.00)     ║
+║ Net Profit              $1,705.50      ║
+║ ROI (6 Months)             34.1%       ║
+║ Average Monthly ROI         5.7%       ║
 ╠════════════════════════════════════════╣
-║ Profit Factor                 1.79     ║
-║ Payoff Ratio                  1.24     ║
-║ Drawdown Máximo              -9.8%     ║
-║ Duración Máxima Draw Down    12 días   ║
+║ Profit Factor               1.79       ║
+║ Payoff Ratio                1.24       ║
+║ Maximum Drawdown           -9.8%       ║
+║ Maximum Drawdown Duration  12 Days     ║
 ╚════════════════════════════════════════╝
 ```
 
 ---
 
-## 📊 ANÁLISIS DETALLADO
+## 📊 DETAILED ANALYSIS
 
-### 1️⃣ DISTRIBUCIÓN DE TRADES
+### 1️⃣ TRADE DISTRIBUTION
 
-| Sesión | Total | Ganadores | Perdedores | Win % | Ganancia Promedio |
+| Session | Total | Winners | Losers | Win % | Average Profit |
 |--------|-------|-----------|------------|-------|-------------------|
 | **Asia** | 28 | 19 | 9 | 67.9% | $38.50 |
-| **Londres** | 34 | 23 | 11 | 67.6% | $42.30 |
-| **NY** | 30 | 19 | 11 | 63.3% | $51.80 |
+| **London** | 34 | 23 | 11 | 67.6% | $42.30 |
+| **New York** | 30 | 19 | 11 | 63.3% | $51.80 |
 | **TOTAL** | **92** | **61** | **31** | **66.3%** | **$43.85** |
 
-**Conclusión:** NY tiene mejor promedio de ganancia pero Asia tiene mejor consistency.
+**Conclusion:** New York has the highest average profit, but Asia has better consistency.
 
 ---
 
-### 2️⃣ ESTADÍSTICAS POR DIRECCIÓN
+### 2️⃣ STATISTICS BY DIRECTION
 
-#### COMPRAS (BUY)
-```
-Total Compras:          52
-Ganadores:              35 (67.3%)
-Perdedores:             17 (32.7%)
-Ganancia Promedio:      $45.20
-Pérdida Promedio:       -$69.10
-Ratio Ganancia/Pérdida: 0.65
-```
+#### BUY
 
-#### VENTAS (SELL)
 ```
-Total Ventas:           40
-Ganadores:              26 (65.0%)
-Perdedores:             14 (35.0%)
-Ganancia Promedio:      $41.50
-Pérdida Promedio:       -$70.30
-Ratio Ganancia/Pérdida: 0.59
+Total Buy Trades:         52
+Winning Trades:           35 (67.3%)
+Losing Trades:            17 (32.7%)
+Average Profit:           $45.20
+Average Loss:            -$69.10
+Profit/Loss Ratio:        0.65
 ```
 
-**Conclusión:** Compras ligeramente más rentables.
+#### SELL
+
+```
+Total Sell Trades:        40
+Winning Trades:           26 (65.0%)
+Losing Trades:            14 (35.0%)
+Average Profit:           $41.50
+Average Loss:            -$70.30
+Profit/Loss Ratio:        0.59
+```
+
+**Conclusion:** Buy trades are slightly more profitable.
 
 ---
 
-### 3️⃣ ANÁLISIS MENSUAL
+### 3️⃣ MONTHLY ANALYSIS
 
-| Mes | Trades | Ganadores | Win % | Ganancia | Pérdida | Neta | ROI |
+| Month | Trades | Winners | Win % | Profit | Loss | Net | ROI |
 |-----|--------|-----------|-------|----------|---------|------|-----|
-| Mes 1 | 15 | 10 | 66.7% | $652 | -$241 | +$411 | +8.2% |
-| Mes 2 | 16 | 11 | 68.8% | $698 | -$198 | +$500 | +10% |
-| Mes 3 | 15 | 10 | 66.7% | $625 | -$215 | +$410 | +8.2% |
-| Mes 4 | 15 | 9 | 60% | $548 | -$389 | +$159 | +3.2% |
-| Mes 5 | 18 | 11 | 61.1% | $687 | -$438 | +$249 | +5% |
-| Mes 6 | 13 | 10 | 76.9% | $637 | -$261 | +$376 | +7.5% |
+| Month 1 | 15 | 10 | 66.7% | $652 | -$241 | +$411 | +8.2% |
+| Month 2 | 16 | 11 | 68.8% | $698 | -$198 | +$500 | +10% |
+| Month 3 | 15 | 10 | 66.7% | $625 | -$215 | +$410 | +8.2% |
+| Month 4 | 15 | 9 | 60% | $548 | -$389 | +$159 | +3.2% |
+| Month 5 | 18 | 11 | 61.1% | $687 | -$438 | +$249 | +5% |
+| Month 6 | 13 | 10 | 76.9% | $637 | -$261 | +$376 | +7.5% |
 | **TOTAL** | **92** | **61** | **66.3%** | **$3,847.50** | **-$2,142** | **+$1,705.50** | **+34.1%** |
 
-**Conclusión:** Mes 2 y Mes 6 fueron más consistentes. Mes 4 tuvo mayor drawdown.
+**Conclusion:** Months 2 and 6 were the most consistent. Month 4 had the largest drawdown.
+
+## 🎯 CONFLUENCE ANALYSIS
+
+### Confluence Level vs Profit
+
+```
+CONFLUENCE   TOTAL    WINNERS    WIN %    AVERAGE PROFIT
+────────────────────────────────────────────────────────
+3/5          28       16         57.1%    $31.40
+4/5          38       27         71.1%    $48.60
+5/5          26       18         69.2%    $52.30
+```
+
+**CRITICAL Conclusion:**
+- **Confluence 4/5 and 5/5 have a better win rate (69–71%)**
+- **It is recommended to increase the minimum requirement to 4/5 instead of 3/5**
+- **This would reduce the number of trades but increase profitability**
 
 ---
 
-## 🎯 ANÁLISIS DE CONFLUENCE
+## 📉 DRAWDOWN ANALYSIS
 
-### Nivel de Confluence vs Ganancia
-
-```
-CONFLUENCE   TOTAL    GANADORES   WIN %   GANANCIA PROM
-───────────────────────────────────────────────────────
-3/5          28       16          57.1%   $31.40
-4/5          38       27          71.1%   $48.60
-5/5          26       18          69.2%   $52.30
-```
-
-**Conclusión CRÍTICA:**
-- **Confluence 4/5 y 5/5 tienen mejor win rate (69-71%)**
-- **Se recomienda elevar mínimo a 4/5 en lugar de 3/5**
-- **Esto reduciría trades pero aumentaría rentabilidad**
-
----
-
-## 📉 ANÁLISIS DE DRAWDOWN
-
-### Drawdowns Máximos Consecutivos
+### Maximum Consecutive Drawdowns
 
 ```
-Fecha          Drawdown   Días   Causa Probable
+Date          Drawdown   Days   Probable Cause
 ──────────────────────────────────────────────
-2026-01-15     -$145      3 días  Volatilidad alta
-2026-02-08     -$220      5 días  Noticias económicas
-2026-03-22     -$315      7 días  Trend cambio
-2026-04-30     -$490      12 días ⚠️ CRÍTICO (98% del límite)
-2026-05-15     -$280      6 días  Recuperación
-2026-06-03     -$195      4 días  Corrección
+2026-01-15    -$145      3 Days  High Volatility
+2026-02-08    -$220      5 Days  Economic News
+2026-03-22    -$315      7 Days  Trend Change
+2026-04-30    -$490      12 Days ⚠️ CRITICAL (98% of the limit)
+2026-05-15    -$280      6 Days  Recovery
+2026-06-03    -$195      4 Days  Correction
 ```
 
-**Advertencia:** En abril casi se alcanza el límite de -$500.
+**Warning:** In April, the strategy nearly reached the -$500 limit.
 
 ---
 
-## 🔍 ANÁLISIS DE PATRONES
+## 🔍 PATTERN ANALYSIS
 
-### Mejor Hora para Operar
+### Best Trading Hours
 
 ```
-HORA GMT    TRADES   WIN%    GANANCIA PROM
-─────────────────────────────────────────
-00-04 (Asia PRE)     8        62.5%      $28.40
-04-08 (Asia Open)   14        71.4%      $45.20 ⭐
-08-12 (Londres)     16        68.8%      $41.50
-12-16 (NY)          18        72.2%      $51.80 ⭐⭐
-16-20 (Overlap)     14        64.3%      $35.60
-20-00 (Asia PRE)    22        63.6%      $33.20
+GMT TIME      TRADES   WIN%    AVERAGE PROFIT
+─────────────────────────────────────────────
+00-04 (Asia PRE)      8       62.5%      $28.40
+04-08 (Asia Open)    14       71.4%      $45.20 ⭐
+08-12 (London)       16       68.8%      $41.50
+12-16 (New York)     18       72.2%      $51.80 ⭐⭐
+16-20 (Overlap)      14       64.3%      $35.60
+20-00 (Asia PRE)     22       63.6%      $33.20
 ```
 
-**Recomendación:** Mejor operación entre 04-08 GMT y 12-16 GMT.
+**Recommendation:** The best trading periods are between **04:00–08:00 GMT** and **12:00–16:00 GMT**.
 
 ---
 
-### Mayor Volatilidad
+### Highest Volatility
 
 ```
-DÍA         TRADES   VOLATILIDAD   WIN%   GANANCIA
-────────────────────────────────────────────────
-Lunes       14       Media          64.3%  $38.50
-Martes      16       Baja ↓         71.9%  $48.60 ⭐
-Miércoles   17       Alta ↑         58.8%  $31.20
-Jueves      15       Media          66.7%  $42.80
-Viernes     14       Muy Alta ↑↑    57.1%  $28.90
-Sábado      10       Baja           80%    $56.40 ⭐
-Domingo     6        Muy Baja ↓     50%    $18.50
+DAY          TRADES   VOLATILITY      WIN%    PROFIT
+────────────────────────────────────────────────────
+Monday       14       Medium          64.3%   $38.50
+Tuesday      16       Low ↓           71.9%   $48.60 ⭐
+Wednesday    17       High ↑          58.8%   $31.20
+Thursday     15       Medium          66.7%   $42.80
+Friday       14       Very High ↑↑    57.1%   $28.90
+Saturday     10       Low             80.0%   $56.40 ⭐
+Sunday       6        Very Low ↓      50.0%   $18.50
 ```
 
-**Recomendación:** Evitar viernes (volatilidad muy alta). Martes y sábados óptimos.
+**Recommendation:** Avoid trading on **Fridays** due to very high volatility. **Tuesdays** and **Saturdays** provide the best performance.
 
----
+## 💡 RECOMMENDED IMPROVEMENTS
 
-## 💡 MEJORAS RECOMENDADAS
+### 1. Increase Minimum Confluence
 
-### 1. Aumentar Confluence Mínimo
 ```
-Cambio actual:    Confluence ≥ 3/5
-Recomendado:      Confluence ≥ 4/5
+Current Setting:      Confluence ≥ 3/5
+Recommended:          Confluence ≥ 4/5
 
-Resultado esperado:
+Expected Result:
 - Win Rate: 66% → 70%
-- Trades menos pero más rentables
-- Drawdown máximo reducido
+- Fewer trades but higher profitability
+- Reduced maximum drawdown
 ```
 
-### 2. Filtro de Volatilidad
+### 2. Volatility Filter
+
 ```
-Evitar operación si ATR > 3.5 (exceso volatilidad)
-Operar preferiblemente entre ATR 0.8-2.5
+Avoid trading if ATR > 3.5 (Excessive Volatility)
+Prefer trading when ATR is between 0.8–2.5
 ```
 
-### 3. Horario Optimizado
+### 3. Optimized Trading Schedule
+
 ```
-Mejor período:     04:00-09:00 GMT (Asia Open)
-Segundo mejor:     12:00-17:00 GMT (NY)
-Evitar:            Viernes 16:00-21:00 GMT
+Best Period:          04:00–09:00 GMT (Asia Open)
+Second Best:          12:00–17:00 GMT (New York)
+Avoid:                Fridays 16:00–21:00 GMT
 ```
 
-### 4. Take Profit Dinámico
+### 4. Dynamic Take Profit
+
 ```
-Actual:     TP fijo (100-140 pips)
-Propuesta:  TP dinámico según volatilidad
-- ATR baja:    TP +150 pips
-- ATR media:   TP +100 pips
-- ATR alta:    TP +70 pips
+Current:      Fixed TP (100–140 pips)
+Proposed:     Dynamic TP based on Volatility
+
+- Low ATR:      TP +150 pips
+- Medium ATR:   TP +100 pips
+- High ATR:     TP +70 pips
 ```
 
 ---
 
-## 📈 PROYECCIÓN FASE 1
+## 📈 PHASE 1 PROJECTION
 
-### Con Configuración Actual
+### With Current Configuration
+
 ```
-Meta:               $500 ganancia
-Promedio diario:    $35.45 (basado en 92 trades en 6 meses)
-Trades promedio:    15.3 por mes = ~0.5 por día
+Target:              $500 Profit
+Daily Average:       $35.45 (Based on 92 trades over 6 months)
+Average Trades:      15.3 per month ≈ 0.5 per day
 
-Proyección:
-- Día 1: Prob. +$30-50 ✅
-- Día 2: Prob. +$40-60 ✅
-- Día 3: Prob. +$35-55 ✅
-- Día 4: Prob. +$45-65 ✅
-- Día 5: Prob. +$50-70 ✅
+Projection:
+- Day 1: Expected +$30–50 ✅
+- Day 2: Expected +$40–60 ✅
+- Day 3: Expected +$35–55 ✅
+- Day 4: Expected +$45–65 ✅
+- Day 5: Expected +$50–70 ✅
 ────────────────────────
-TOTAL: +$200-300 en 5 días (objetivo: $500)
+TOTAL: +$200–300 in 5 days (Target: $500)
 
-⚠️ RESULTADO: Posiblemente no alcance $500 en 5 días
+⚠️ RESULT: Unlikely to reach $500 within 5 days
 ```
 
-### Con Mejoras (Confluence 4/5)
-```
-Win Rate mejorado:   70%
-Ganancia promedio:   +$48.60 por trade
-Trades optimizados:  ~12 por mes
+### With Improvements (Confluence 4/5)
 
-Proyección:
-- Día 1: +$50-70 ✅
-- Día 2: +$55-75 ✅
-- Día 3: +$60-80 ✅
-- Día 4: +$50-70 ✅
-- Día 5: +$55-75 ✅
+```
+Improved Win Rate:    70%
+Average Profit:       +$48.60 per trade
+Optimized Trades:     ~12 per month
+
+Projection:
+- Day 1: +$50–70 ✅
+- Day 2: +$55–75 ✅
+- Day 3: +$60–80 ✅
+- Day 4: +$50–70 ✅
+- Day 5: +$55–75 ✅
 ────────────────────────
-TOTAL: +$270-370 en 5 días
+TOTAL: +$270–370
 
-⚠️ RESULTADO: Aún necesita ajustes para $500
+⚠️ RESULT: Still requires additional improvements to reach $500
 ```
 
-### Con Todas las Mejoras (Confluence 4/5 + Horario optimizado + Lote 0.015)
-```
-Win Rate:            72%
-Ganancia promedio:   +$60/trade (lote aumentado)
-Trades optimizados:  ~18 en 5 días (horario optimizado)
+### With All Improvements (Confluence 4/5 + Optimized Schedule + 0.015 Lot Size)
 
-Proyección:
-- Día 1: +$90-110 ✅
-- Día 2: +$95-115 ✅
-- Día 3: +$100-120 ✅
-- Día 4: +$85-105 ✅
-- Día 5: +$95-115 ✅
+```
+Win Rate:             72%
+Average Profit:       +$60 per trade (Increased Lot Size)
+Optimized Trades:     ~18 in 5 days
+
+Projection:
+- Day 1: +$90–110 ✅
+- Day 2: +$95–115 ✅
+- Day 3: +$100–120 ✅
+- Day 4: +$85–105 ✅
+- Day 5: +$95–115 ✅
 ────────────────────────
-TOTAL: +$465-565 ✅ META ALCANZADA
+TOTAL: +$465–565 ✅ TARGET ACHIEVED
 
-✅ RESULTADO: Probable alcanzar $500 con mejoras
+✅ RESULT: Likely to reach $500 with the improvements
 ```
 
 ---
 
-## 🎲 RIESGO FASE 1
+## 🎲 PHASE 1 RISK
 
-### Escenario Pesimista (-$100/día)
+### Pessimistic Scenario (-$100/day)
+
 ```
-Día 1: -$100 → PAUSA
-Día 2: -$100 → PAUSA (Acum: -$200)
-Día 3: -$100 → PAUSA (Acum: -$300)
-Día 4: -$100 → PAUSA (Acum: -$400)
-Día 5: -$100 → PAUSA (Acum: -$500) ⛔ GAME OVER
+Day 1: -$100 → PAUSE
+Day 2: -$100 → PAUSE (Total: -$200)
+Day 3: -$100 → PAUSE (Total: -$300)
+Day 4: -$100 → PAUSE (Total: -$400)
+Day 5: -$100 → PAUSE (Total: -$500) ⛔ GAME OVER
 
-Probabilidad estadística: ~5-8% (muy baja)
-```
-
-### Escenario Realista
-```
-Día 1: +$65 ✅
-Día 2: -$45 ✅ (Acum: +$20)
-Día 3: +$80 ✅ (Acum: +$100)
-Día 4: -$30 ✅ (Acum: +$70)
-Día 5: +$120 ✅ (Acum: +$190)
-
-Total en 5 días: +$190 (Necesita 2-3 días más)
-Probabilidad: ~60-70%
+Statistical Probability: ~5–8% (Very Low)
 ```
 
-### Escenario Optimista (+$100/día)
+### Realistic Scenario
+
 ```
-Día 1: +$110 ✅ (META DIARIA: +$100)
-Día 2: +$125 ✅ (META DIARIA: +$100)
-Día 3: +$105 ✅ (META DIARIA: +$100)
-Día 4: +$95 ✅ (Acum: +$435)
-Día 5: +$85 ✅ (Acum: +$520) ✅ FASE 1 COMPLETADA
+Day 1: +$65 ✅
+Day 2: -$45 ✅ (Total: +$20)
+Day 3: +$80 ✅ (Total: +$100)
+Day 4: -$30 ✅ (Total: +$70)
+Day 5: +$120 ✅ (Total: +$190)
 
-Probabilidad: ~15-20%
-```
-
----
-
-## ✅ CONCLUSIONES Y RECOMENDACIONES
-
-### Fortalezas
-✅ Win Rate consistente 66.3%  
-✅ Profit Factor 1.79 (>1.5 es bueno)  
-✅ Drawdown controlado (máx -9.8%)  
-✅ Estrategia confluence es efectiva  
-✅ Operación 24/7 reduce gaps  
-
-### Debilidades
-⚠️ Ganancia promedio $43.85 podría ser mayor  
-⚠️ Confluence 3/5 tiene riesgo bajo win rate  
-⚠️ Viernes volatilidad muy alta  
-⚠️ Posiblemente no alcance $500 en 5 días sin mejoras  
-
-### Recomendación Final
-🎯 **COMENZAR CON MEJORAS APLICADAS:**
-
-1. Aumentar confluence mínimo a 4/5 (+5-10% win rate)
-2. Evitar viernes después de 16:00 GMT
-3. Operar preferiblemente 04:00-09:00 y 12:00-17:00 GMT
-4. Considerar aumentar lotaje a 0.015 después de primeras ganancias
-5. Monitorear diariamente el drawdown
-
-**Probabilidad de Éxito Fase 1 (con mejoras): 75-80%**
-
----
-
-## 📊 DATOS HISTÓRICOS COMPLETOS
-
-### Top 5 Ganancias
-```
-1. +$145 - Compra en zona acumulación, confluence 5/5
-2. +$132 - Venta en resistencia, confluence 5/5
-3. +$128 - Compra RSI oversold + MACD bullish
-4. +$121 - Venta RSI overbought + MACD bearish
-5. +$115 - Compra en rebote de soporte
+Total in 5 Days: +$190 (Requires 2–3 more days)
+Probability: ~60–70%
 ```
 
-### Top 5 Pérdidas
+### Optimistic Scenario (+$100/day)
+
 ```
-1. -$185 - Stop loss en noticia económica inesperada
-2. -$165 - Cambio de trend rápido
-3. -$152 - False breakout de resistencia
-4. -$148 - Gap por apertura de sesión
-5. -$135 - Confluence 3/5 = riesgo elevado
+Day 1: +$110 ✅ (Daily Target: +$100)
+Day 2: +$125 ✅ (Daily Target: +$100)
+Day 3: +$105 ✅ (Daily Target: +$100)
+Day 4: +$95 ✅ (Total: +$435)
+Day 5: +$85 ✅ (Total: +$520) ✅ PHASE 1 COMPLETED
+
+Probability: ~15–20%
 ```
 
 ---
 
-**Reporte generado:** 2026-06-04  
-**Analista:** EA Backtest System  
-**Versión:** 1.0
+## ✅ CONCLUSIONS AND RECOMMENDATIONS
+
+### Strengths
+
+✅ Consistent 66.3% Win Rate  
+✅ Profit Factor 1.79 (>1.5 is considered good)  
+✅ Controlled Drawdown (Maximum -9.8%)  
+✅ Confluence Strategy is Effective  
+✅ 24/7 Trading Reduces Gaps
+
+### Weaknesses
+
+⚠️ Average Profit of $43.85 Could Be Higher  
+⚠️ Confluence 3/5 Has a Lower Win Rate  
+⚠️ Friday Has Very High Volatility  
+⚠️ Unlikely to Reach $500 in 5 Days Without Improvements
+
+### Final Recommendation
+
+🎯 **START WITH THE FOLLOWING IMPROVEMENTS APPLIED:**
+
+1. Increase Minimum Confluence to 4/5 (+5–10% Win Rate)
+2. Avoid Trading on Fridays After 16:00 GMT
+3. Trade Preferably Between 04:00–09:00 GMT and 12:00–17:00 GMT
+4. Consider Increasing the Lot Size to 0.015 After Initial Profits
+5. Monitor Drawdown Daily
+
+**Probability of Phase 1 Success (With Improvements): 75–80%**
+
+---
+
+## 📊 COMPLETE HISTORICAL DATA
+
+### Top 5 Winning Trades
+
+```
+1. +$145 - Buy at Accumulation Zone, Confluence 5/5
+2. +$132 - Sell at Resistance, Confluence 5/5
+3. +$128 - Buy with RSI Oversold + MACD Bullish
+4. +$121 - Sell with RSI Overbought + MACD Bearish
+5. +$115 - Buy on Support Rebound
+```
+
+### Top 5 Losing Trades
+
+```
+1. -$185 - Stop Loss Triggered by Unexpected Economic News
+2. -$165 - Rapid Trend Change
+3. -$152 - False Resistance Breakout
+4. -$148 - Session Opening Gap
+5. -$135 - Confluence 3/5 = Higher Risk
+```
+
+---
+
+**Report Generated:** 2026-06-04  
+**Analyst:** EA Backtest System  
+**Version:** 1.0
